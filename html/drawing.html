@@ -3,16 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<link rel="stylesheet" href="css/colorpicker.css" type="text/css">
 		<link rel="stylesheet" type="text/css" href="pres/drawing/panelStyle.css"/>
 		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/base/jquery-ui.css"/>
 		<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.js"></script>
-		<script type="text/javascript" src="http://code.createjs.com/easeljs-0.4.2.min.js"></script>
-		<script type="text/javascript" src="js/colorpicker.js"></script>
-		<script type="text/javascript" src="js/eye.js"></script>
-		<script type="text/javascript" src="js/utils.js"></script>
-		<script type="text/javascript" src="js/layout.js?ver=1.0.2"></script>
 		<script type="text/javascript" language="javascript" src ="scripts/drawing/canvas.js"></script>
 		<script type="text/javascript" language="javascript" src ="scripts/drawing/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="scripts/drawing/drawing.js"></script>
@@ -25,78 +19,14 @@
 	</head>
 	<body>
 		<h1>Drawing Canvas</h1>
-		<!--<ul class="topnav">
-		<li>
-		<a href="#">File</a>
-		<ul class="subnav">
-		<li>
-		<a href="#">Import Image...</a>
-		</li>
-		</ul>
-		</li>
-		<li>
-		<a href="#">Preferences</a>
-		<ul class="subnav">
-		<li>
-		<a href="#">Document Size</a>
-		</li>
-		</ul>
-		</li>
-		<li>
-		<a href="#">View</a>
-		<ul class="subnav">
-		<li>
-		<a href="#">Show/Hide Layers Windows</a>
-		</li>
-		</ul>
-		</li>
-		<li>
-		<a href="#">Tools</a>
-		<ul class="subnav">
-		<li>
-		<a href="#">Stroke color</a>
-		</li>
-		<li>
-		<a href="#">Stroke size</a>
-		</li>
-		<li>
-		<a href="#">Add Layer</a>
-		</li>
-		</ul>
-		</li>
-		<li>
-		<a href="#">Help</a>
-		</li>
-
-		</ul>-->
-		<div id="controls">
+				<div id="controls">
 			Import Image:
 			<input type="file" id="fileUpload"/>
-			<div id="colorSelector">
-				<div style="background-color: rgb(0, 0, 0); "></div>
-			</div>
-			<!--<input type="text" size="7" id="fillColor"/>-->
+			Stroke color:
+			<input type="text" size="7" id="fillColor"/>
 			Stroke Size:
 			<input type="text" size="2" id="strokeSize"/>
 		</div>
-		<script type="text/javascript">
-			$('#colorSelector').ColorPicker({
-				color : '#0000ff',
-				onShow : function(colpkr) {
-					$(colpkr).fadeIn(500);
-					return false;
-				},
-				onHide : function(colpkr) {
-					$(colpkr).fadeOut(500);
-					return false;
-				},
-				onChange : function(hsb, hex, rgb) {
-					$('#colorSelector div').css('backgroundColor', '#' + hex);
-					ctx.strokeStyle = hex;
-				}
-			});
-
-		</script>
 		<div id="layersList" >
 			<h1>Layers</h1>
 			<input type="button" id="addLayer" value="Add Layer" />
