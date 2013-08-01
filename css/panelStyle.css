@@ -9,6 +9,10 @@ height: 36px;
 background: url(../images/select.png);
 }
 
+.delBtn{
+	color: #ff0000;
+}
+
 canvas{
 	display:block;
 	position:absolute;

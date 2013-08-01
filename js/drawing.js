@@ -122,11 +122,12 @@ var addToLayerList = function(newCanvasRow){
 
 var insertLayerDeleteButton = function(element, layerNumber){
 	var newCell = document.createElement("td");
-	var imageElement = document.createElement("img");
-	imageElement.setAttribute("src","assets/layer_close.png");
-	imageElement.setAttribute("associatedLayer", layerNumber);
-	imageElement.addEventListener("click",onDeleteClickHandler,true);
-	newCell.appendChild(imageElement);
+	var delWrapper = document.createElement("a");
+	delWrapper.innerHTML="X";
+	delWrapper.className="delBtn";
+	delWrapper.setAttribute("associatedLayer", layerNumber);
+	delWrapper.addEventListener("click",onDeleteClickHandler,true);
+	newCell.appendChild(delWrapper);
 	element.appendChild(newCell);
 };
 
