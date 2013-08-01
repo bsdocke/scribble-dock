@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<project name="scribble-dock" default="tc-deploy">
+	<property file="prop.properties" />
+	<target name="tc-deploy">
+		<copy todir="${tcdir}">
+			<fileset dir=".">
+				<exclude name="**/build.xml"/>
+				<exclude name="**/*.properties"/>
+				<exclude name="**/*.md"/>
+				<exclude name="**/*.project"/>
+			</fileset>
+		</copy>
+	</target>
+</project>

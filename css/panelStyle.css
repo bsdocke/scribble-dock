@@ -9,6 +9,11 @@ height: 36px;
 background: url(../images/select.png);
 }
 
+canvas{
+	display:block;
+	position:absolute;
+}
+
 /*ul.topnav {
 	list-style: none;
 	padding: 0 20px;	
