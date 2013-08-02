@@ -1,7 +1,7 @@
 /**
  * @author Brandon
  */
-
+var OVERLAY_Z_INDEX = 100000;
 var ctx;
 var canvases;
 var currentCanvas;
@@ -19,26 +19,47 @@ var getCanvases = function() {
 
 var initCanvases = function(){
 	canvases = new Array();
+	initOverlay();
 	addCanvas();
+	
+};
+
+var initOverlay = function(){
+	var workPanel = getWorkPanel();
+	var newCanvas = buildCanvas();
+	workPanel.appendChild(newCanvas);
+	newCanvas.className="overlay_canvas";
+	newCanvas.style.zIndex=OVERLAY_Z_INDEX;
+};
+
+var getWorkPanel = function(){
+	return document.getElementById("workPanel");
+};
+
+var appendCanvas = function(canvasElement){
+	getWorkPanel().appendChild(canvasElement);
 };
 
 var addCanvas = function() {
-	var workPanel = document.getElementById("workPanel");
 	var newCanvas = buildCanvas();
 	
 	updateCurrentCanvasVariables(newCanvas);
 	incrementLayerNumber();
 	addEventsToCanvas();
 	addToLayerList(newCanvas);
-	workPanel.appendChild(newCanvas);
-	newCanvas.style.zIndex=layerNum
+	appendCanvas(newCanvas);
+	newCanvas.style.zIndex=layerNum;
 };
 
 var updateCurrentCanvasVariables = function(newCanvas){
 	if(!currentCanvas) currentCanvas = newCanvas;	
 	ctx = updateContext(newCanvas.getContext('2d'));
 	currentCanvas = newCanvas;
-	if(canvases.indexOf(newCanvas) == -1) canvases.push(newCanvas);
+	if(isCanvasInList(newCanvas)) canvases.push(newCanvas);
+};
+
+var isCanvasInList = function(checkedCanvas){
+	return canvases.indexOf(checkedCanvas == -1);
 };
 
 var updateContext = function(newContext){
@@ -63,14 +84,6 @@ var buildCanvas = function() {
 	//newCanvas = (layerNum);
 
 	return newCanvas;
-};
-
-var buildOverlayCanvas = function(){
-	var newOverlayCanvas = buildCanvasWithDimensions(800,600);
-	newCanvas = setCanvasId(newCanvas,"overlay_canvas");
-	newCanvas = setCanvasStyle(Number.MAX_VALUE);
-	
-	return newOverlayCanvas;
 };
 
 var buildCanvasWithDimensions = function(width,height){
