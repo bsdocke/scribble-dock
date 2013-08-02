@@ -2,6 +2,18 @@ var layerNum = 0;
 var lineStarted = false;
 var activeLayer;
 
+var SELECTOR_TOOL = "Selector";
+var RECTANGLE_TOOL = "Rectangle";
+var ELLIPSE_TOOL = "Ellipse";
+var LINE_TOOL = "Line";
+var BRUSH_TOOL = "Brush";
+var FILL_TOOL = "Fill";
+
+var currentTool = {
+	name:"",
+	hasBoundingBox:false,
+}
+
 var onAddLayerClickHandler = function(event){
 	addCanvas();
 };
