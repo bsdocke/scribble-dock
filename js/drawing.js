@@ -80,12 +80,18 @@ var onFillColorChangeHandler = function(e) {
 	ctx.strokeStyle = e.target.value;
 };
 
+var setTool = function(newCurrTool,bound){
+	currentTool.name=newCurrTool;
+	currentTool.hasBoundingBox=bound;
+};
+
 var initControlPanel = function() {
 	var stroke = document.getElementById("strokeSize");
 	var fillColor = document.getElementById("fillColor");
 	var fileUpload = document.getElementById("fileUpload");
 	var addLayerButton = document.getElementById("addLayer");
 	var clearButton = document.getElementById("clearCanvas");
+	var rectButton = document.getElementByid("rectangle_btn");
 	
 	setStrokeToRound();
 	
@@ -94,6 +100,7 @@ var initControlPanel = function() {
 	fileUpload.onchange = fileUploadHandler;
 	addLayerButton.onclick = onAddLayerClickHandler;
 	clearButton.onclick = clearCanvas;
+	rectButton.onclick = setTool(RECTANGLE_TOOL,true);
 };
 
 var setStrokeToRound = function(){
