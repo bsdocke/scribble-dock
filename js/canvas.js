@@ -30,6 +30,8 @@ var initOverlay = function(){
 	workPanel.appendChild(newCanvas);
 	newCanvas.className="overlay_canvas";
 	newCanvas.style.zIndex=OVERLAY_Z_INDEX;
+	overlayCanvas = newCanvas;
+	overlayCtx = newCanvas.getContext('2d');
 };
 
 var getWorkPanel = function(){
