@@ -76,7 +76,6 @@ var onMouseDownHandler = function(e) {
 var onMouseUpHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	lineStarted = false;
-	//ctx.closePath();
 	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
 	if (isRectangleTool()) {
 		ctx.beginPath();
@@ -84,7 +83,6 @@ var onMouseUpHandler = function(e) {
 		overlayCanvas.width = overlayCanvas.width;
 		drawRectangleOnContext(ctx, e);
 		ctx.fill();
-		//overlayCtx.stroke();
 	}
 };
 
@@ -123,6 +121,10 @@ var onFillColorChangeHandler = function(e) {
 	ctx.strokeStyle = e.target.value;
 };
 
+var onInteriorFillColorChangeHandler = function(e){
+	ctx.fillStyle = e.target.value;
+}
+
 var setTool = function(newCurrTool, bound) {
 	currentTool.name = newCurrTool;
 	currentTool.hasBoundingBox = bound;
@@ -144,6 +146,7 @@ var setRectangleTool = function() {
 var initControlPanel = function() {
 	var stroke = document.getElementById("strokeSize");
 	var fillColor = document.getElementById("fillColor");
+	var interiorFillColor = document.getElementById("interiorFillColor");
 	var fileUpload = document.getElementById("fileUpload");
 	var addLayerButton = document.getElementById("addLayer");
 	var clearButton = document.getElementById("clearCanvas");
@@ -153,6 +156,7 @@ var initControlPanel = function() {
 
 	stroke.onchange = onStrokeChangeHandler;
 	fillColor.onchange = onFillColorChangeHandler;
+	interiorFillColor.onchange = onInteriorFillColorChangeHandler;
 	fileUpload.onchange = fileUploadHandler;
 	addLayerButton.onclick = onAddLayerClickHandler;
 	clearButton.onclick = clearCanvas;
