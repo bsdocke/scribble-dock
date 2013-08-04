@@ -107,5 +107,6 @@ var setCanvasStyle = function(canvas, zIndex){
 };
 
 var clearCanvas = function() {
-	ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
+	currentCanvas.width = currentCanvas.width;
+	//ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 };

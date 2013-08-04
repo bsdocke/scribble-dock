@@ -10,16 +10,20 @@ var BRUSH_TOOL = "Brush";
 var FILL_TOOL = "Fill";
 
 var currentTool = {
-	name:"",
-	hasBoundingBox:false,
+	name : "",
+	hasBoundingBox : false,
 }
 
-var onAddLayerClickHandler = function(event){
+var onAddLayerClickHandler = function(event) {
 	addCanvas();
 };
 
-var incrementLayerNumber = function(){
+var incrementLayerNumber = function() {
 	layerNum++;
+};
+
+var isRectangleTool = function(){
+	return currentTool.name == RECTANGLE_TOOL;
 };
 
 var onMouseMoveHandler = function(e) {
@@ -28,29 +32,49 @@ var onMouseMoveHandler = function(e) {
 	x = e.pageX - point.x;
 	y = e.pageY - point.y;
 
-	if(lineStarted) {
-		ctx.lineTo(x, y);
-		ctx.stroke();
+	if (isRectangleTool()) {
+		overlayCanvas.width = overlayCanvas.width;
+		if(x < rectX){
+			if(y < rectY){
+				overlayCtx.rect(x,y,Math.abs(rectX-x),Math.abs(rectY-y));
+			}
+			else{
+				overlayCtx.rect(x,rectY,Math.abs(rectX-x),Math.abs(rectY-y));
+			}
+		}
+		else{
+			if(y < rectY){
+				overlayCtx.rect(rectX,y,Math.abs(x-rectX),Math.abs(rectY-y));
+			}
+			else{
+				overlayCtx.rect(rectX,rectY,Math.abs(x-rectX),Math.abs(y-rectY));
+			}
+		}
+		overlayCtx.stroke();
 	} else {
-		ctx.beginPath();
-		ctx.moveTo(x, y);
-		ctx.closePath();
-		lineStarted = true;
+		if (lineStarted) {
+			ctx.lineTo(x, y);
+			ctx.stroke();
+		} else {
+			ctx.beginPath();
+			ctx.moveTo(x, y);
+			ctx.closePath();
+			lineStarted = true;
+		}
 	}
-
 };
 
-var findOffset = function(element){
+var findOffset = function(element) {
 	var left = 0;
 	var top = 0;
-	if(element.offsetParent){
-		do{
+	if (element.offsetParent) {
+		do {
 			top += element.offsetTop;
 			left += element.offsetLeft;
-		}while(element = element.offsetParent);
+		} while(element = element.offsetParent);
 		return {
-			x: left,
-			y: top
+			x : left,
+			y : top
 		};
 	}
 };
@@ -58,17 +82,49 @@ var findOffset = function(element){
 var onMouseDownHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
+	if(currentTool.name == RECTANGLE_TOOL){
+		var x, y;
+		var point = findOffset(e.target);
+		rectX = e.pageX - point.x;
+		rectY = e.pageY - point.y;
+	}
 };
 
 var onMouseUpHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	lineStarted = false;
 	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
+	if(currentTool.name == RECTANGLE_TOOL){
+		overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+		var x, y;
+		var point = findOffset(e.target);
+		x = e.pageX - point.x;
+		y = e.pageY - point.y;
+		if(x < rectX){
+			if(y < rectY){
+				ctx.rect(x,y,Math.abs(rectX-x),Math.abs(rectY-y));
+			}
+			else{
+				ctx.rect(x,rectY,Math.abs(rectX-x),Math.abs(rectY-y));
+			}
+		}
+		else{
+			if(y < rectY){
+				ctx.rect(rectX,y,Math.abs(x-rectX),Math.abs(rectY-y));
+			}
+			else{
+				ctx.rect(rectX,rectY,Math.abs(x-rectX),Math.abs(y-rectY));
+			}
+		}
+		ctx.stroke();
+		ctx.fill();
+		//overlayCtx.stroke();
+	}
 };
 
 var addEventsToCanvas = function() {
 	var panel = document.getElementById("workPanel");
-	panel.addEventListener("mousedown", onMouseDownHandler,true);
+	panel.addEventListener("mousedown", onMouseDownHandler, true);
 	panel.addEventListener("mouseup", onMouseUpHandler, true);
 };
 
@@ -80,9 +136,18 @@ var onFillColorChangeHandler = function(e) {
 	ctx.strokeStyle = e.target.value;
 };
 
-var setTool = function(newCurrTool,bound){
-	currentTool.name=newCurrTool;
-	currentTool.hasBoundingBox=bound;
+var setTool = function(newCurrTool, bound) {
+	currentTool.name = newCurrTool;
+	currentTool.hasBoundingBox = bound;
+};
+
+var setRectangleTool = function(){
+	if(currentTool.name == RECTANGLE_TOOL){
+		setTool("", false);
+	}
+	else{
+		setTool(RECTANGLE_TOOL, true);
+	}
 };
 
 var initControlPanel = function() {
@@ -91,71 +156,73 @@ var initControlPanel = function() {
 	var fileUpload = document.getElementById("fileUpload");
 	var addLayerButton = document.getElementById("addLayer");
 	var clearButton = document.getElementById("clearCanvas");
-	var rectButton = document.getElementByid("rectangle_btn");
-	
+	var rectButton = document.getElementById("rectangle_btn");
+
 	setStrokeToRound();
-	
+
 	stroke.onchange = onStrokeChangeHandler;
 	fillColor.onchange = onFillColorChangeHandler;
 	fileUpload.onchange = fileUploadHandler;
 	addLayerButton.onclick = onAddLayerClickHandler;
 	clearButton.onclick = clearCanvas;
-	rectButton.onclick = setTool(RECTANGLE_TOOL,true);
+	rectButton.onclick = setRectangleTool;
 };
 
-var setStrokeToRound = function(){
+var setStrokeToRound = function() {
 	ctx.lineCap = "round";
 	ctx.lineJoin = "round";
 };
 
-var onLayerClickHandler = function(e){
-	if(activeLayer) activeLayer.style.background = "";
+var onLayerClickHandler = function(e) {
+	if (activeLayer)
+		activeLayer.style.background = "";
 	updateCurrentCanvasVariables(e.target.canvas);
 	addEventsToCanvas();
 	activeLayer = e.target;
 	activeLayer.style.background = "#ff00ff";
 };
 
-var onDeleteClickHandler = function(e){	
+var onDeleteClickHandler = function(e) {
 	updateCurrentCanvasVariables(document.getElementById("layer" + e.target.getAttribute("associatedLayer")).canvas);
 	currentCanvas.parentNode.removeChild(currentCanvas);
-	e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode);	
+	e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode);
 };
 
-var addToLayerList = function(newCanvasRow){
+var addToLayerList = function(newCanvasRow) {
 	var table = document.getElementById("layersTable");
 	var newRow = document.createElement("tr");
-	var anchor = document.createElement("a");	
-	
-	if(activeLayer) activeLayer.style.background = "";
-	anchor.setAttribute("id","layer" + layerNum);
+	var anchor = document.createElement("a");
+
+	if (activeLayer)
+		activeLayer.style.background = "";
+	anchor.setAttribute("id", "layer" + layerNum);
 	anchor.innerHTML = "Layer " + layerNum;
 	table.appendChild(newRow);
 	newRow.appendChild(anchor);
 	insertLayerDeleteButton(newRow, layerNum);
 	anchor.style.background = "#ff00ff";
-	anchor.addEventListener("click",onLayerClickHandler,true);
+	anchor.addEventListener("click", onLayerClickHandler, true);
 	anchor.canvas = currentCanvas;
 	activeLayer = anchor;
 };
 
-var insertLayerDeleteButton = function(element, layerNumber){
+var insertLayerDeleteButton = function(element, layerNumber) {
 	var newCell = document.createElement("td");
 	var delWrapper = document.createElement("a");
-	delWrapper.innerHTML="X";
-	delWrapper.className="delBtn";
+	delWrapper.innerHTML = "X";
+	delWrapper.className = "delBtn";
 	delWrapper.setAttribute("associatedLayer", layerNumber);
-	delWrapper.addEventListener("click",onDeleteClickHandler,true);
+	delWrapper.addEventListener("click", onDeleteClickHandler, true);
 	newCell.appendChild(delWrapper);
 	element.appendChild(newCell);
 };
 
-var init = function() {	
+var init = function() {
 	initCanvases();
-	initControlPanel();	
+	initControlPanel();
 	$("#layersList").dialog();
 };
 
-$(document).ready(function(){
+$(document).ready(function() {
 	init();
-});
+}); 
