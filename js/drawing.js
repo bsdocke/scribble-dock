@@ -116,6 +116,7 @@ var onMouseUpHandler = function(e) {
 				ctx.rect(rectX,rectY,Math.abs(x-rectX),Math.abs(y-rectY));
 			}
 		}
+		
 		ctx.stroke();
 		ctx.fill();
 		//overlayCtx.stroke();
@@ -144,9 +145,14 @@ var setTool = function(newCurrTool, bound) {
 var setRectangleTool = function(){
 	if(currentTool.name == RECTANGLE_TOOL){
 		setTool("", false);
+		var rectangleElement = document.getElementById("rectangle_btn");
+		rectangleElement.className = "";
 	}
 	else{
+		var rectangleElement = document.getElementById("rectangle_btn");
+		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
+		setStrokeToRound();
 	}
 };
 

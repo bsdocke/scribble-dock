@@ -107,6 +107,11 @@ var setCanvasStyle = function(canvas, zIndex){
 };
 
 var clearCanvas = function() {
+	var oldStrokeWidth = ctx.lineWidth;
+	var oldStrokeStyle = ctx.strokeStyle;
 	currentCanvas.width = currentCanvas.width;
+	ctx.lineWidth = oldStrokeWidth;
+	ctx.strokeStyle = oldStrokeStyle;
+	setStrokeToRound();
 	//ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 };

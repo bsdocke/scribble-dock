@@ -17,3 +17,7 @@ canvas{
 	display:block;
 	position:absolute;
 }
+
+#rectangle_btn .activated{
+	border:#FF0000;
+}
