@@ -22,7 +22,7 @@ var incrementLayerNumber = function() {
 	layerNum++;
 };
 
-var isRectangleTool = function(){
+var isRectangleTool = function() {
 	return currentTool.name == RECTANGLE_TOOL;
 };
 
@@ -34,23 +34,7 @@ var onMouseMoveHandler = function(e) {
 
 	if (isRectangleTool()) {
 		overlayCanvas.width = overlayCanvas.width;
-		if(x < rectX){
-			if(y < rectY){
-				overlayCtx.rect(x,y,Math.abs(rectX-x),Math.abs(rectY-y));
-			}
-			else{
-				overlayCtx.rect(x,rectY,Math.abs(rectX-x),Math.abs(rectY-y));
-			}
-		}
-		else{
-			if(y < rectY){
-				overlayCtx.rect(rectX,y,Math.abs(x-rectX),Math.abs(rectY-y));
-			}
-			else{
-				overlayCtx.rect(rectX,rectY,Math.abs(x-rectX),Math.abs(y-rectY));
-			}
-		}
-		overlayCtx.stroke();
+		drawRectangleOnContext(overlayCtx,e);
 	} else {
 		if (lineStarted) {
 			ctx.lineTo(x, y);
@@ -58,7 +42,7 @@ var onMouseMoveHandler = function(e) {
 		} else {
 			ctx.beginPath();
 			ctx.moveTo(x, y);
-			ctx.closePath();
+			//ctx.closePath();
 			lineStarted = true;
 		}
 	}
@@ -82,8 +66,7 @@ var findOffset = function(element) {
 var onMouseDownHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
-	if(currentTool.name == RECTANGLE_TOOL){
-		var x, y;
+	if (currentTool.name == RECTANGLE_TOOL) {
 		var point = findOffset(e.target);
 		rectX = e.pageX - point.x;
 		rectY = e.pageY - point.y;
@@ -93,34 +76,37 @@ var onMouseDownHandler = function(e) {
 var onMouseUpHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	lineStarted = false;
+	//ctx.closePath();
 	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
-	if(currentTool.name == RECTANGLE_TOOL){
-		overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
-		var x, y;
-		var point = findOffset(e.target);
-		x = e.pageX - point.x;
-		y = e.pageY - point.y;
-		if(x < rectX){
-			if(y < rectY){
-				ctx.rect(x,y,Math.abs(rectX-x),Math.abs(rectY-y));
-			}
-			else{
-				ctx.rect(x,rectY,Math.abs(rectX-x),Math.abs(rectY-y));
-			}
-		}
-		else{
-			if(y < rectY){
-				ctx.rect(rectX,y,Math.abs(x-rectX),Math.abs(rectY-y));
-			}
-			else{
-				ctx.rect(rectX,rectY,Math.abs(x-rectX),Math.abs(y-rectY));
-			}
-		}
-		
-		ctx.stroke();
+	if (isRectangleTool()) {
+		ctx.beginPath();
+		ctx.closePath();
+		overlayCanvas.width = overlayCanvas.width;
+		drawRectangleOnContext(ctx, e);
 		ctx.fill();
 		//overlayCtx.stroke();
 	}
+};
+
+var drawRectangleOnContext = function(ctx, event) {
+	var x, y;
+	var point = findOffset(event.target);
+	x = event.pageX - point.x;
+	y = event.pageY - point.y;
+	if (x < rectX) {
+		if (y < rectY) {
+			ctx.rect(x, y, Math.abs(rectX - x), Math.abs(rectY - y));
+		} else {
+			ctx.rect(x, rectY, Math.abs(rectX - x), Math.abs(rectY - y));
+		}
+	} else {
+		if (y < rectY) {
+			ctx.rect(rectX, y, Math.abs(x - rectX), Math.abs(rectY - y));
+		} else {
+			ctx.rect(rectX, rectY, Math.abs(x - rectX), Math.abs(y - rectY));
+		}
+	}
+	ctx.stroke();
 };
 
 var addEventsToCanvas = function() {
@@ -142,13 +128,12 @@ var setTool = function(newCurrTool, bound) {
 	currentTool.hasBoundingBox = bound;
 };
 
-var setRectangleTool = function(){
-	if(currentTool.name == RECTANGLE_TOOL){
+var setRectangleTool = function() {
+	if (currentTool.name == RECTANGLE_TOOL) {
 		setTool("", false);
 		var rectangleElement = document.getElementById("rectangle_btn");
 		rectangleElement.className = "";
-	}
-	else{
+	} else {
 		var rectangleElement = document.getElementById("rectangle_btn");
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
@@ -231,4 +216,4 @@ var init = function() {
 
 $(document).ready(function() {
 	init();
-}); 
+});
