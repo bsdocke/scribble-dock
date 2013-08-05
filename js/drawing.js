@@ -33,7 +33,14 @@ var onMouseMoveHandler = function(e) {
 	y = e.pageY - point.y;
 
 	if (isRectangleTool()) {
-		overlayCanvas.width = overlayCanvas.width;
+		overlayCtx.beginPath();
+		overlayCtx.closePath();
+		var w = overlayCanvas.width;
+		var h = overlayCanvas.height;
+		overlayCanvas.width = 1;
+		overlayCanvas.width = w;
+		overlayCtx.clearRect(0,0,w,h);
+		//overlayCtx.stroke();
 		drawRectangleOnContext(overlayCtx,e);
 	} else {
 		if (lineStarted) {
@@ -80,7 +87,11 @@ var onMouseUpHandler = function(e) {
 	if (isRectangleTool()) {
 		ctx.beginPath();
 		ctx.closePath();
-		overlayCanvas.width = overlayCanvas.width;
+		var w = overlayCanvas.width;
+		var h = overlayCanvas.height;
+		overlayCanvas.width = 1;
+		overlayCanvas.width = w;
+		overlayCtx.clearRect(0,0,w,h);
 		drawRectangleOnContext(ctx, e);
 		ctx.fill();
 	}
