@@ -75,6 +75,7 @@ var copyCtxProperties = function(oldCtx, newCtx){
 	newCtx.lineJoin = oldCtx.lineJoin;
 	newCtx.lineWidth = oldCtx.lineWidth;
 	newCtx.strokeStyle = oldCtx.strokeStyle;
+	newCtx.fillStyle = oldCtx.fillStyle;
 	
 	return newCtx;
 }
