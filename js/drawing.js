@@ -26,6 +26,9 @@ var isRectangleTool = function() {
 	return currentTool.name == RECTANGLE_TOOL;
 };
 
+var isEllipseTool = function() {
+	return currentTool.name == ELLIPSE_TOOL;
+}
 var onMouseMoveHandler = function(e) {
 	var x, y;
 	var point = findOffset(e.target);
@@ -39,9 +42,16 @@ var onMouseMoveHandler = function(e) {
 		var h = overlayCanvas.height;
 		overlayCanvas.width = 1;
 		overlayCanvas.width = w;
-		overlayCtx.clearRect(0,0,w,h);
+		overlayCtx.clearRect(0, 0, w, h);
 		//overlayCtx.stroke();
-		drawRectangleOnContext(overlayCtx,e);
+		drawRectangleOnContext(overlayCtx, e);
+	} else if (isEllipseTool()) {
+		overlayCtx.beginPath();
+		overlayCtx.closePath();
+		var w = overlayCanvas.width;
+		var h = overlayCanvas.height;
+		overlayCtx.clearRect(0, 0, w, h);
+		drawEllipseOnContext(overlayCtx, e);
 	} else {
 		if (lineStarted) {
 			ctx.lineTo(x, y);
@@ -73,10 +83,10 @@ var findOffset = function(element) {
 var onMouseDownHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
-	if (currentTool.name == RECTANGLE_TOOL) {
+	if (isRectangleTool() || isEllipseTool()) {
 		var point = findOffset(e.target);
-		rectX = e.pageX - point.x;
-		rectY = e.pageY - point.y;
+		boundingBoxX = e.pageX - point.x;
+		boundingBoxY = e.pageY - point.y;
 	}
 };
 
@@ -91,8 +101,18 @@ var onMouseUpHandler = function(e) {
 		var h = overlayCanvas.height;
 		overlayCanvas.width = 1;
 		overlayCanvas.width = w;
-		overlayCtx.clearRect(0,0,w,h);
+		overlayCtx.clearRect(0, 0, w, h);
 		drawRectangleOnContext(ctx, e);
+		ctx.fill();
+	} else if (isEllipseTool()) {
+		ctx.beginPath();
+		ctx.closePath();
+		var w = overlayCanvas.width;
+		var h = overlayCanvas.height;
+		overlayCanvas.width = 1;
+		overlayCanvas.width = w;
+		overlayCtx.clearRect(0, 0, w, h);
+		drawEllipseOnContext(ctx, e);
 		ctx.fill();
 	}
 };
@@ -102,19 +122,64 @@ var drawRectangleOnContext = function(ctx, event) {
 	var point = findOffset(event.target);
 	x = event.pageX - point.x;
 	y = event.pageY - point.y;
-	if (x < rectX) {
-		if (y < rectY) {
-			ctx.rect(x, y, Math.abs(rectX - x), Math.abs(rectY - y));
+	if (x < boundingBoxX) {
+		if (y < boundingBoxY) {
+			ctx.rect(x, y, Math.abs(boundingBoxX - x), Math.abs(boundingBoxY - y));
 		} else {
-			ctx.rect(x, rectY, Math.abs(rectX - x), Math.abs(rectY - y));
+			ctx.rect(x, boundingBoxY, Math.abs(boundingBoxX - x), Math.abs(boundingBoxY - y));
 		}
 	} else {
-		if (y < rectY) {
-			ctx.rect(rectX, y, Math.abs(x - rectX), Math.abs(rectY - y));
+		if (y < boundingBoxY) {
+			ctx.rect(boundingBoxX, y, Math.abs(x - boundingBoxX), Math.abs(boundingBoxY - y));
 		} else {
-			ctx.rect(rectX, rectY, Math.abs(x - rectX), Math.abs(y - rectY));
+			ctx.rect(boundingBoxX, boundingBoxY, Math.abs(x - boundingBoxX), Math.abs(y - boundingBoxY));
 		}
 	}
+	ctx.stroke();
+};
+
+var drawEllipseOnContext = function(ctx, event) {
+	var x, y;
+	var point = findOffset(event.target);
+	x = event.pageX - point.x;
+	y = event.pageY - point.y;
+	var w = Math.abs(x - boundingBoxX);
+	var h = Math.abs(y - boundingBoxY);
+	if (x < boundingBoxX) {
+		if (y < boundingBoxY) {
+			drawEllipseByCenter(ctx, boundingBoxX - w / 2, boundingBoxY - h / 2, w, h);
+		} else {
+			drawEllipseByCenter(ctx, boundingBoxX - w / 2, boundingBoxY + h / 2, w, h);
+		}
+	} else {
+		if (y < boundingBoxY) {
+			drawEllipseByCenter(ctx, boundingBoxX + w / 2, boundingBoxY - h / 2, w, h);
+		} else {
+			drawEllipseByCenter(ctx, boundingBoxX + w / 2, boundingBoxY + h / 2, w, h);
+		}
+	}
+	ctx.stroke();
+}
+var drawEllipseByCenter = function(ctx, cx, cy, w, h) {
+	drawEllipse(ctx, cx - w / 2.0, cy - h / 2.0, w, h);
+};
+
+var drawEllipse = function(ctx, x, y, w, h) {
+	var kappa = .5522848, ox = (w / 2) * kappa, // control point offset horizontal
+	oy = (h / 2) * kappa, // control point offset vertical
+	xe = x + w, // x-end
+	ye = y + h, // y-end
+	xm = x + w / 2, // x-middle
+	ym = y + h / 2;
+	// y-middle
+
+	ctx.beginPath();
+	ctx.moveTo(x, ym);
+	ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+	ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+	ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+	ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+	ctx.closePath();
 	ctx.stroke();
 };
 
@@ -132,24 +197,34 @@ var onFillColorChangeHandler = function(e) {
 	ctx.strokeStyle = e.target.value;
 };
 
-var onInteriorFillColorChangeHandler = function(e){
+var onInteriorFillColorChangeHandler = function(e) {
 	ctx.fillStyle = e.target.value;
 }
-
 var setTool = function(newCurrTool, bound) {
 	currentTool.name = newCurrTool;
 	currentTool.hasBoundingBox = bound;
 };
 
 var setRectangleTool = function() {
+	var rectangleElement = document.getElementById("rectangle_btn");
 	if (currentTool.name == RECTANGLE_TOOL) {
 		setTool("", false);
-		var rectangleElement = document.getElementById("rectangle_btn");
 		rectangleElement.className = "";
 	} else {
-		var rectangleElement = document.getElementById("rectangle_btn");
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
+		setStrokeToRound();
+	}
+};
+
+var setEllipseTool = function() {
+	var ellipseElement = document.getElementById("ellipse_btn");
+	if (isEllipseTool()) {
+		setTool("", false);
+		rectangleElement.className = "";
+	} else {
+		ellipseElement.className = "active";
+		setTool(ELLIPSE_TOOL, true);
 		setStrokeToRound();
 	}
 };
@@ -162,6 +237,7 @@ var initControlPanel = function() {
 	var addLayerButton = document.getElementById("addLayer");
 	var clearButton = document.getElementById("clearCanvas");
 	var rectButton = document.getElementById("rectangle_btn");
+	var ellipseButton = document.getElementById("ellipse_btn");
 
 	setStrokeToRound();
 
@@ -172,6 +248,7 @@ var initControlPanel = function() {
 	addLayerButton.onclick = onAddLayerClickHandler;
 	clearButton.onclick = clearCanvas;
 	rectButton.onclick = setRectangleTool;
+	ellipseButton.onclick = setEllipseTool;
 };
 
 var setStrokeToRound = function() {

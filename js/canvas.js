@@ -21,7 +21,6 @@ var initCanvases = function(){
 	canvases = new Array();
 	initOverlay();
 	addCanvas();
-	
 };
 
 var initOverlay = function(){
@@ -109,9 +108,11 @@ var setCanvasStyle = function(canvas, zIndex){
 var clearCanvas = function() {
 	var oldStrokeWidth = ctx.lineWidth;
 	var oldStrokeStyle = ctx.strokeStyle;
+	var oldFillStyle = ctx.fillStyle;
 	currentCanvas.width = currentCanvas.width;
 	ctx.lineWidth = oldStrokeWidth;
 	ctx.strokeStyle = oldStrokeStyle;
+	ctx.fillStyle = oldFillStyle;
 	setStrokeToRound();
 	//ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 };
