@@ -113,7 +113,7 @@ var commitRectangleToCanvas = function(e) {
 	ctx.fill();
 };
 
-var commitEllipseToCanvas = function() {
+var commitEllipseToCanvas = function(e) {
 	ctx.beginPath();
 	ctx.closePath();
 	var w = overlayCanvas.width;
@@ -131,7 +131,7 @@ var onMouseUpHandler = function(e) {
 	if (isRectangleTool()) {
 		commitRectangleToCanvas(e);
 	} else if (isEllipseTool()) {
-		commitEllipseToCanvas();
+		commitEllipseToCanvas(e);
 	} else if (isFillTool()) {
 		ctx.beginPath();
 		ctx.closePath();
@@ -378,6 +378,18 @@ var setRectangleTool = function() {
 	}
 };
 
+var setFillTool = function() {
+	var fillElement = document.getElementById("fill_btn");
+	if(currentTool.name == FILL_TOOL){
+		setTool("", false);
+		fillElement.className = "";
+	}else{
+		fillElement.className = "active";
+		setTool(FILL_TOOL, true);
+		setStrokeToRound();
+	}
+};
+
 var setEllipseTool = function() {
 	var ellipseElement = document.getElementById("ellipse_btn");
 	if (isEllipseTool()) {
@@ -399,6 +411,7 @@ var initControlPanel = function() {
 	var clearButton = document.getElementById("clearCanvas");
 	var rectButton = document.getElementById("rectangle_btn");
 	var ellipseButton = document.getElementById("ellipse_btn");
+	var fillButton = document.getElementById("fill_btn");
 
 	setStrokeToRound();
 
@@ -410,6 +423,7 @@ var initControlPanel = function() {
 	clearButton.onclick = clearCanvas;
 	rectButton.onclick = setRectangleTool;
 	ellipseButton.onclick = setEllipseTool;
+	fillButton.onclick = setFillTool;
 };
 
 var setStrokeToRound = function() {
