@@ -18,6 +18,7 @@ canvas{
 	position:absolute;
 }
 
-#rectangle_btn .activated{
-	border:#FF0000;
+.active {
+   padding:1px;
+   border:1px solid #021a40;
 }

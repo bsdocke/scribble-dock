@@ -38,7 +38,8 @@ var onMouseMoveHandler = function(e) {
 	var point = findOffset(e.target);
 	x = e.pageX - point.x;
 	y = e.pageY - point.y;
-
+	if (!currentCanvas.locked) {
+	
 	if (isRectangleTool()) {
 		overlayCtx.beginPath();
 		overlayCtx.closePath();
@@ -69,6 +70,7 @@ var onMouseMoveHandler = function(e) {
 			lineStarted = true;
 		}
 	}
+}
 };
 
 var findOffset = function(element) {
@@ -89,7 +91,7 @@ var findOffset = function(element) {
 var onMouseDownHandler = function(e) {
 	var panel = document.getElementById("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
-	if (isRectangleTool() || isEllipseTool()) {
+	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool())) {
 		var point = findOffset(e.target);
 		boundingBoxX = e.pageX - point.x;
 		boundingBoxY = e.pageY - point.y;
@@ -125,103 +127,104 @@ var commitEllipseToCanvas = function(e) {
 	ctx.fill();
 }
 var onMouseUpHandler = function(e) {
-	removeMoveListenerFromWorkPanel();
-	lineStarted = false;
+	
+		removeMoveListenerFromWorkPanel();
+		lineStarted = false;
+if (!currentCanvas.locked) {
+		if (isRectangleTool()) {
+			commitRectangleToCanvas(e);
+		} else if (isEllipseTool()) {
+			commitEllipseToCanvas(e);
+		} else if (isFillTool()) {
+			ctx.beginPath();
+			ctx.closePath();
+			var tracer = new Array(currentCanvas.width);
+			for (var i = 0; i < tracer.length; i++) {
+				tracer[i] = new Array(currentCanvas.height);
+			}
 
-	if (isRectangleTool()) {
-		commitRectangleToCanvas(e);
-	} else if (isEllipseTool()) {
-		commitEllipseToCanvas(e);
-	} else if (isFillTool()) {
-		ctx.beginPath();
-		ctx.closePath();
-		var tracer = new Array(currentCanvas.width);
-		for (var i = 0; i < tracer.length; i++) {
-			tracer[i] = new Array(currentCanvas.height);
-		}
+			var x, y;
+			var clickpoint = findOffset(e.target);
+			x = e.pageX - clickpoint.x;
+			y = e.pageY - clickpoint.y;
 
-		var x, y;
-		var clickpoint = findOffset(e.target);
-		x = e.pageX - clickpoint.x;
-		y = e.pageY - clickpoint.y;
+			var trail = new Array();
+			//get target pixel color and coordinates
+			var point = {
+				x : x,
+				y : y
+			};
+			trail.push({
+				x : point.x + 1,
+				y : point.y
+			});
+			trail.push({
+				x : point.x - 1,
+				y : point.y
+			});
+			trail.push({
+				x : point.x,
+				y : point.y - 1
+			});
+			trail.push({
+				x : point.x,
+				y : point.y + 1
+			});
 
-		var trail = new Array();
-		//get target pixel color and coordinates
-		var point = {
-			x : x,
-			y : y
-		};
-		trail.push({
-			x : point.x + 1,
-			y : point.y
-		});
-		trail.push({
-			x : point.x - 1,
-			y : point.y
-		});
-		trail.push({
-			x : point.x,
-			y : point.y - 1
-		});
-		trail.push({
-			x : point.x,
-			y : point.y + 1
-		});
+			var initData = ctx.getImageData(0, 0, currentCanvas.width, currentCanvas.height);
+			var initpix = initData.data;
+			var colorInjectionData = hexToRgb(ctx.fillStyle);
+			var finalPosition = getPixelArrayPosition(point.x, point.y);
 
-		var initData = ctx.getImageData(0, 0, currentCanvas.width, currentCanvas.height);
-		var initpix = initData.data;
-		var colorInjectionData = hexToRgb(ctx.fillStyle);
-		var finalPosition = getPixelArrayPosition(point.x, point.y);
+			var segmentColor = rgbToHex(initpix[finalPosition], initpix[finalPosition + 1], initpix[finalPosition + 2]);
+			var segmentAlpha = initpix[finalPosition + 3];
+			if (pixelInBounds(point) && !colorsMatch(ctx.fillStyle, segmentColor, 255, segmentAlpha)) {
+				setPixelColor(initpix, finalPosition, colorInjectionData);
+				tracer[point.x][point.y] = true;
 
-		var segmentColor = rgbToHex(initpix[finalPosition], initpix[finalPosition + 1], initpix[finalPosition + 2]);
-		var segmentAlpha = initpix[finalPosition + 3];
-		if (pixelInBounds(point) && !colorsMatch(ctx.fillStyle, segmentColor, 255, segmentAlpha)) {
-			setPixelColor(initpix,finalPosition,colorInjectionData);
-			tracer[point.x][point.y] = true;
+			}
+			while (trail.length > 0) {
 
-		}
-		while (trail.length > 0) {
+				var transition = trail.pop();
+				finalPosition = getPixelArrayPosition(transition.x, transition.y);
+				tracer[transition.x][transition.y] = true;
 
-			var transition = trail.pop();
-			finalPosition = getPixelArrayPosition(transition.x, transition.y);
-			tracer[transition.x][transition.y] = true;
+				if (pixelInBounds(transition)) {
+					var nexthex = rgbToHex(getRed(initpix, finalPosition), getGreen(initpix, finalPosition), getBlue(initpix, finalPosition));
+					if (shouldBeFilled(segmentColor, nexthex, segmentAlpha, initpix[finalPosition + 3])) {
+						setPixelColor(initpix, finalPosition, colorInjectionData);
+						tracer[transition.x][transition.y] = true;
 
-			if (pixelInBounds(transition)) {
-				var nexthex = rgbToHex(getRed(initpix,finalPosition), getGreen(initpix,finalPosition), getBlue(initpix,finalPosition));
-				if (shouldBeFilled(segmentColor, nexthex, segmentAlpha, initpix[finalPosition + 3])) {
-					setPixelColor(initpix,finalPosition,colorInjectionData);
-					tracer[transition.x][transition.y] = true;
-
-					var rightNode = {
-						x : transition.x + 1,
-						y : transition.y
-					};
-					var leftNode = {
-						x : transition.x - 1,
-						y : transition.y
-					};
-					var upNode = {
-						x : transition.x,
-						y : transition.y - 1
-					};
-					var downNode = {
-						x : transition.x,
-						y : transition.y + 1
-					};
-					if (pixelInBounds(rightNode) && !tracer[rightNode.x][rightNode.y])
-						trail.push(rightNode);
-					if (pixelInBounds(leftNode) && !tracer[leftNode.x][leftNode.y])
-						trail.push(leftNode);
-					if (pixelInBounds(upNode) && !tracer[upNode.x][upNode.y])
-						trail.push(upNode);
-					if (pixelInBounds(rightNode) && !tracer[downNode.x][downNode.y])
-						trail.push(downNode);
+						var rightNode = {
+							x : transition.x + 1,
+							y : transition.y
+						};
+						var leftNode = {
+							x : transition.x - 1,
+							y : transition.y
+						};
+						var upNode = {
+							x : transition.x,
+							y : transition.y - 1
+						};
+						var downNode = {
+							x : transition.x,
+							y : transition.y + 1
+						};
+						if (pixelInBounds(rightNode) && !tracer[rightNode.x][rightNode.y])
+							trail.push(rightNode);
+						if (pixelInBounds(leftNode) && !tracer[leftNode.x][leftNode.y])
+							trail.push(leftNode);
+						if (pixelInBounds(upNode) && !tracer[upNode.x][upNode.y])
+							trail.push(upNode);
+						if (pixelInBounds(rightNode) && !tracer[downNode.x][downNode.y])
+							trail.push(downNode);
+					}
 				}
-			} 
+			}
+			ctx.putImageData(initData, 0, 0);
 		}
-		ctx.putImageData(initData, 0, 0);
 	}
-
 };
 
 var setPixelColor = function(pixelData, offset, colorData) {
@@ -241,19 +244,19 @@ var colorsMatch = function(oneColor, twoColor, alpha1, alpha2) {
 	return oneColor == twoColor && alpha1 == alpha2;
 };
 
-var getRed= function(pixelArray,offset){
+var getRed = function(pixelArray, offset) {
 	return pixelArray[offset];
 };
 
-var getGreen = function(pixelArray,offset){
+var getGreen = function(pixelArray, offset) {
 	return pixelArray[offset + 1];
 };
 
-var getBlue = function(pixelArray,offset){
+var getBlue = function(pixelArray, offset) {
 	return pixelArray[offset + 2];
 };
 
-var getAlpha = function(pixelArray,offset){
+var getAlpha = function(pixelArray, offset) {
 	return pixelArray[offset + 3];
 };
 
@@ -372,6 +375,7 @@ var setRectangleTool = function() {
 		setTool("", false);
 		rectangleElement.className = "";
 	} else {
+		$('.active').attr('class', '');
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
 		setStrokeToRound();
@@ -380,10 +384,11 @@ var setRectangleTool = function() {
 
 var setFillTool = function() {
 	var fillElement = document.getElementById("fill_btn");
-	if(currentTool.name == FILL_TOOL){
+	if (currentTool.name == FILL_TOOL) {
 		setTool("", false);
 		fillElement.className = "";
-	}else{
+	} else {
+		$('.active').attr('class', '');
 		fillElement.className = "active";
 		setTool(FILL_TOOL, true);
 		setStrokeToRound();
@@ -394,10 +399,12 @@ var setEllipseTool = function() {
 	var ellipseElement = document.getElementById("ellipse_btn");
 	if (isEllipseTool()) {
 		setTool("", false);
-		rectangleElement.className = "";
+		ellipseElement.className = "";
 	} else {
+		$('.active').attr('class', '');
 		ellipseElement.className = "active";
 		setTool(ELLIPSE_TOOL, true);
+		overlayCanvas.style.cursor = 'crosshair';
 		setStrokeToRound();
 	}
 };
@@ -440,6 +447,9 @@ var onLayerClickHandler = function(e) {
 	activeLayer.style.background = "#ff00ff";
 };
 
+var onLockClickHandler = function(e) {
+	currentCanvas.locked = !currentCanvas.locked;
+}
 var onDeleteClickHandler = function(e) {
 	updateCurrentCanvasVariables(document.getElementById("layer" + e.target.getAttribute("associatedLayer")).canvas);
 	currentCanvas.parentNode.removeChild(currentCanvas);
@@ -457,11 +467,25 @@ var addToLayerList = function(newCanvasRow) {
 	anchor.innerHTML = "Layer " + layerNum;
 	table.appendChild(newRow);
 	newRow.appendChild(anchor);
+	insertLayerLockButton(newRow, layerNum);
 	insertLayerDeleteButton(newRow, layerNum);
 	anchor.style.background = "#ff00ff";
 	anchor.addEventListener("click", onLayerClickHandler, true);
 	anchor.canvas = currentCanvas;
 	activeLayer = anchor;
+};
+
+var insertLayerLockButton = function(element, layerNumber) {
+	var newCell = document.createElement("td");
+	var lockWrapper = document.createElement("a");
+	var lockImg = document.createElement("img");
+	lockImg.setAttribute('src', './assets/lock.gif');
+	lockWrapper.className = "lockBtn";
+	lockWrapper.setAttribute("associatedLayer", layerNumber);
+	lockWrapper.addEventListener("click", onLockClickHandler, true);
+	newCell.appendChild(lockWrapper);
+	lockWrapper.appendChild(lockImg);
+	element.appendChild(newCell);
 };
 
 var insertLayerDeleteButton = function(element, layerNumber) {

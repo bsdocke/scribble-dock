@@ -43,13 +43,14 @@ var appendCanvas = function(canvasElement){
 
 var addCanvas = function() {
 	var newCanvas = buildCanvas();
-	
+	newCanvas.locked = false;
 	updateCurrentCanvasVariables(newCanvas);
 	incrementLayerNumber();
 	addEventsToCanvas();
 	addToLayerList(newCanvas);
 	appendCanvas(newCanvas);
 	newCanvas.style.zIndex=layerNum;
+	
 };
 
 var updateCurrentCanvasVariables = function(newCanvas){
