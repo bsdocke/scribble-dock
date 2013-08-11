@@ -449,6 +449,11 @@ var onLayerClickHandler = function(e) {
 
 var onLockClickHandler = function(e) {
 	currentCanvas.locked = !currentCanvas.locked;
+	if(currentCanvas.locked){
+		e.target.parentElement.style.background = 'red';
+	}else{
+		e.target.parentElement.style.background = "";
+	}
 }
 var onDeleteClickHandler = function(e) {
 	updateCurrentCanvasVariables(document.getElementById("layer" + e.target.getAttribute("associatedLayer")).canvas);
