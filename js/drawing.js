@@ -278,7 +278,14 @@ var setStrokeToRound = function() {
 var init = function() {
 	initCanvases();
 	initControlPanel();
-	$("#layersList").dialog();
+	var popups = $('.closablePopup');
+	var popupCloseBtns = $('.popupClose');
+	for(var i=0; i < popups.length; i++){
+		popups[i].onmousedown=dragPopupDown;
+	}
+	for(var j=0; j < popupCloseBtns.length; j++){
+		popupCloseBtns[j].onclick=closePopup;
+	}
 };
 
 $(document).ready(function() {
