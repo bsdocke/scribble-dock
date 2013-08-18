@@ -26,11 +26,9 @@ canvas{
 .closablePopup { 
     /*display:none;*/ /* Hide the DIV */
     position:fixed;  
-    height:300px;  
-    width:600px;  
+    
     background:#FFFFFF;  
-    left: 300px;
-    top: 150px;
+    
     z-index:500000; /* Layering ( on-top of others), if you have lots of layers: I just maximized, you can change it yourself */
     margin-left: 15px;  
     
@@ -42,6 +40,20 @@ canvas{
     -webkit-box-shadow: 0 0 5px #ff0000;
     box-shadow: 0 0 5px #ff0000;
     
+}
+
+#toolsBox{
+	height:200px;  
+    width:100px; 
+    left: 800px;
+    top: 150px; 
+}
+
+#layersList{
+	height:300px;  
+    width:300px;  
+    left: 300px;
+    top: 150px;
 }
 
 .popupClose {
