@@ -18,6 +18,10 @@ var isRectangleTool = function() {
 	return currentTool.name == RECTANGLE_TOOL;
 };
 
+var isBrushTool = function() {
+	return currentTool.name == BRUSH_TOOL;
+}
+
 var isEllipseTool = function() {
 	return currentTool.name == ELLIPSE_TOOL;
 };
@@ -49,9 +53,7 @@ var onMouseMoveHandler = function(e) {
 			var h = overlayCanvas.height;
 			overlayCtx.clearRect(0, 0, w, h);
 			drawEllipseOnContext(overlayCtx, e);
-		} else if (isFillTool()) {
-			//fill tool should be unresponsive to mouse movement
-		} else {
+		} else if (isBrushTool()){
 			if (lineStarted) {
 				ctx.lineTo(x, y);
 				ctx.stroke();
@@ -215,6 +217,19 @@ var setFillTool = function() {
 	}
 };
 
+var setBrushTool = function(){
+	var brushElement = document.getElementById("brush_btn");
+	if(isBrushTool()){
+		setTool("", false);
+		brushElement.className = "";
+	} else{
+		$('.active').attr('class', '');
+		brushElement.className = "active";
+		setTool(BRUSH_TOOL, false);
+		setStrokeToRound();
+	}
+};
+
 var setEllipseTool = function() {
 	var ellipseElement = document.getElementById("ellipse_btn");
 	if (isEllipseTool()) {
@@ -239,6 +254,7 @@ var initControlPanel = function() {
 	var rectButton = document.getElementById("rectangle_btn");
 	var ellipseButton = document.getElementById("ellipse_btn");
 	var fillButton = document.getElementById("fill_btn");
+	var brushButton = document.getElementById("brush_btn");
 
 	setStrokeToRound();
 
@@ -251,6 +267,7 @@ var initControlPanel = function() {
 	rectButton.onclick = setRectangleTool;
 	ellipseButton.onclick = setEllipseTool;
 	fillButton.onclick = setFillTool;
+	brushButton.onclick = setBrushTool;
 };
 
 var setStrokeToRound = function() {
