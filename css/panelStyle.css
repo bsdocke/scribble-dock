@@ -24,12 +24,11 @@ canvas{
 }
 
 .closablePopup { 
-    /*display:none;*/ /* Hide the DIV */
     position:fixed;  
     
     background:#FFFFFF;  
     
-    z-index:500000; /* Layering ( on-top of others), if you have lots of layers: I just maximized, you can change it yourself */
+    z-index:500000; 
     margin-left: 15px;  
     
     /* additional features, can be omitted */
@@ -44,7 +43,7 @@ canvas{
 
 #toolsBox{
 	height:200px;  
-    width:100px; 
+    width:50px; 
     left: 800px;
     top: 150px; 
 }
@@ -65,3 +64,15 @@ canvas{
     color:#6fa5e2;  
     font-weight:500;      
 }
+
+.toolbar_btn{
+	display:inline;
+}
+
+.toolbar_btn:hover{
+	background:#cccccc;
+}
+
+.subnav li{
+	display:none;
+};

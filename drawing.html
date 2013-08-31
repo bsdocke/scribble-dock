@@ -21,7 +21,26 @@
 	</head>
 	<body>
 		<h1>Drawing Canvas</h1>
-				<div id="controls">
+		<div id="controls">
+			<ul class="toolbar">
+				<li class="toolbar_btn" id="file_btn">
+					File
+				</li>
+				<li class="toolbar_btn" id="edit_btn">
+					Edit
+				</li>
+				<li class="toolbar_btn" id="windows_btn">
+					Windows
+					<ul class="submenu">
+						<li>
+							Layers
+						</li>
+						<li>
+							Tools
+						</li>
+					</ul>
+				</li>
+			</ul>
 			Import Image:
 			<input type="file" id="fileUpload"/>
 			Stroke color:
@@ -29,7 +48,7 @@
 			Fill color:
 			<input type="text" size="7" id="fillColor" />
 			Stroke Size:
-			<input type="text" size="2" id="strokeSize"/>	
+			<input type="text" size="2" id="strokeSize"/>
 		</div>
 		<div id="toolsBox" class="closablePopup">
 			<a class="popupClose">X</a>
@@ -43,7 +62,7 @@
 					<td><img id="brush_btn" src="assets/brush_tool.gif" /></td>
 				</tr>
 			</table>
-			
+
 		</div>
 		<div id="layersList" class="closablePopup">
 			<a class="popupClose">X</a>
