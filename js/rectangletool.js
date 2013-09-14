@@ -21,7 +21,7 @@ var drawRectangleOnContext = function(ctx, event) {
 		}
 	}
 	ctx.stroke();
-};
+}; 
 
 var commitRectangleToCanvas = function(e) {
 	ctx.beginPath();

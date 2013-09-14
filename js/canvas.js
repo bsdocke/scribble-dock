@@ -26,7 +26,7 @@ var initCanvases = function() {
 	canvases = new Array();
 	initOverlay();
 	addCanvas();
-};
+}; 
 
 var initOverlay = function() {
 	var workPanel = getWorkPanel();

@@ -14,7 +14,7 @@ var createFileReader = function(event) {
 	}
 	return reader;
 };
-
+ 
 var instantiateImageInstance = function(ev) {
 	var img = new Image();
 	img.onload = function() {

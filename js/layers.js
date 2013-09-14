@@ -17,7 +17,7 @@ var onLayerClickHandler = function(e) {
 	addEventsToCanvas();
 	activeLayer = e.target;
 	activeLayer.style.background = "#ff00ff";
-};
+}; 
 
 var onLockClickHandler = function(e) {
 	currentCanvas.locked = !currentCanvas.locked;

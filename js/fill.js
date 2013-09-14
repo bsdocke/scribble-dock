@@ -15,7 +15,7 @@ var commitFillToCanvas = function(e) {
 	var clickpoint = findOffset(e.target);
 	x = e.pageX - clickpoint.x;
 	y = e.pageY - clickpoint.y;
-
+ 
 	var trail = new Array();
 	//get target pixel color and coordinates
 	var point = {

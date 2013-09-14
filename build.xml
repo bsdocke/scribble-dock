@@ -11,4 +11,18 @@
 			</fileset>
 		</copy>
 	</target>
+	<target name="production-deploy">
+		<ftp server="ftp.bdock.net"
+			port="21"
+			remotedir="scripts/drawing"
+			userid="bsdocke"
+			password="Saskatchew1"
+			passive="yes"
+			depends="yes"
+			binary="no">
+			<fileset dir="./js">
+				<include name="canvas.js"/>
+			</fileset>
+		</ftp>
+	</target>
 </project>
