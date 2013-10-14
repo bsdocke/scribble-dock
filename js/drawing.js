@@ -286,6 +286,7 @@ var init = function() {
 	for(var j=0; j < popupCloseBtns.length; j++){
 		popupCloseBtns[j].onclick=closePopup;
 	}
+	
 };
 
 $(document).ready(function() {
