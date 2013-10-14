@@ -65,14 +65,6 @@ canvas{
     font-weight:500;      
 }
 
-.toolbar_btn{
-	display:inline;
+.ribbon_section{
+	display:block;
 }
-
-.toolbar_btn:hover{
-	background:#cccccc;
-}
-
-.subnav li{
-	display:none;
-};

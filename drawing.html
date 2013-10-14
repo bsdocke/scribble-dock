@@ -12,6 +12,7 @@
 		<script type="text/javascript" language="javascript" src ="js/canvas.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/drawing.js"></script>
+		
 		<title>Drawing Canvas</title>
 		<style type="text/css">
 			canvas {
@@ -21,34 +22,18 @@
 	</head>
 	<body>
 		<h1>Drawing Canvas</h1>
+		<iframe frameborder="0" id="main_ribbon" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
 		<div id="controls">
-			<ul class="toolbar">
-				<li class="toolbar_btn" id="file_btn">
-					File
-				</li>
-				<li class="toolbar_btn" id="edit_btn">
-					Edit
-				</li>
-				<li class="toolbar_btn" id="windows_btn">
-					Windows
-					<ul class="submenu">
-						<li>
-							Layers
-						</li>
-						<li>
-							Tools
-						</li>
-					</ul>
-				</li>
-			</ul>
-			Import Image:
-			<input type="file" id="fileUpload"/>
-			Stroke color:
-			<input type="text" size="7" id="strokeColor"/>
-			Fill color:
-			<input type="text" size="7" id="fillColor" />
-			Stroke Size:
-			<input type="text" size="2" id="strokeSize"/>
+			
+				Import Image:
+				<input type="file" id="fileUpload"/>
+				Stroke color:
+				<input type="text" size="7" id="strokeColor"/>
+				Fill color:
+				<input type="text" size="7" id="fillColor" />
+				Stroke Size:
+				<input type="text" size="2" id="strokeSize"/>
+			
 		</div>
 		<div id="toolsBox" class="closablePopup">
 			<a class="popupClose">X</a>

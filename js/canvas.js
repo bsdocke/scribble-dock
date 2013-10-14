@@ -90,6 +90,7 @@ var copyCtxProperties = function(oldCtx, newCtx) {
 var buildCanvas = function() {
 	var newCanvas = buildCanvasWithDimensions(800, 600);
 	newCanvas = setCanvasId(newCanvas, "c_layer_" + layerNum);
+	newCanvas
 	//newCanvas = (layerNum);
 
 	return newCanvas;
