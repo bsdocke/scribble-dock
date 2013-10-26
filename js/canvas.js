@@ -19,7 +19,7 @@ var getContext = function(canvas) {
 };
 
 var getCanvases = function() {
-	return $("#workPanel").childNodes;
+	return document.getElementById("workPanel").childNodes;//$("#workPanel").childNodes;
 };
 
 var initCanvases = function() {

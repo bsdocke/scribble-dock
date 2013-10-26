@@ -8,6 +8,7 @@ var ELLIPSE_TOOL = "Ellipse";
 var LINE_TOOL = "Line";
 var BRUSH_TOOL = "Brush";
 var FILL_TOOL = "Fill";
+var ERASER_TOOL = "Eraser";
 
 var currentTool = {
 	name : "",
@@ -20,7 +21,7 @@ var isRectangleTool = function() {
 
 var isBrushTool = function() {
 	return currentTool.name == BRUSH_TOOL;
-}
+};
 
 var isEllipseTool = function() {
 	return currentTool.name == ELLIPSE_TOOL;
@@ -28,7 +29,12 @@ var isEllipseTool = function() {
 
 var isFillTool = function() {
 	return currentTool.name == FILL_TOOL;
-}
+};
+
+var isEraserTool = function() {
+	return currentTool.name == ERASER_TOOL;
+};
+
 var onMouseMoveHandler = function(e) {
 	var x, y;
 	var point = findOffset(e.target);
@@ -53,7 +59,7 @@ var onMouseMoveHandler = function(e) {
 			var h = overlayCanvas.height;
 			overlayCtx.clearRect(0, 0, w, h);
 			drawEllipseOnContext(overlayCtx, e);
-		} else if (isBrushTool()){
+		} else if (isBrushTool()) {
 			if (lineStarted) {
 				ctx.lineTo(x, y);
 				ctx.stroke();
@@ -61,6 +67,16 @@ var onMouseMoveHandler = function(e) {
 				ctx.beginPath();
 				ctx.moveTo(x, y);
 				//ctx.closePath();
+				lineStarted = true;
+			}
+		} else if (isEraserTool()) {
+			ctx.globalCompositeOperation = "destination-out";
+			if (lineStarted) {
+				ctx.lineTo(x, y);
+				ctx.stroke();
+			} else {
+				ctx.beginPath();
+				ctx.moveTo(x, y);
 				lineStarted = true;
 			}
 		}
@@ -109,7 +125,7 @@ var commitEllipseToCanvas = function(e) {
 	ctx.fill();
 }
 var onMouseUpHandler = function(e) {
-
+	
 	removeMoveListenerFromWorkPanel();
 	lineStarted = false;
 	if (!currentCanvas.locked) {
@@ -119,10 +135,11 @@ var onMouseUpHandler = function(e) {
 			commitEllipseToCanvas(e);
 		} else if (isFillTool()) {
 			commitFillToCanvas(e);
+		} else if (isEraserTool()){
+			ctx.globalCompositeOperation = "destination-over";
 		}
 	}
 };
-
 
 var drawEllipseOnContext = function(ctx, event) {
 	var x, y;
@@ -197,9 +214,30 @@ var setRectangleTool = function() {
 		setTool("", false);
 		rectangleElement.className = "";
 	} else {
-		$('.active').attr('class', '');
+		var activeElements = document.getElementsByClassName('active');
+		for (var i in activeElements) {
+			activeElements[i].className = '';
+		}
+		//$('.active').attr('class', '');
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
+		setStrokeToRound();
+	}
+};
+
+setEraserTool = function() {
+	var eraserElement = document.getElementById("eraser_btn");
+	if (currentTool.name == ERASER_TOOL) {
+		setTool("", false);
+		eraserElement.className = "";
+	} else {
+		var activeElements = document.getElementsByClassName('active');
+		for (var i in activeElements) {
+			activeElements[i].className = '';
+		}
+		//$('.active').attr('class', '');
+		eraserElement.className = "active";
+		setTool(ERASER_TOOL, true);
 		setStrokeToRound();
 	}
 };
@@ -210,20 +248,28 @@ var setFillTool = function() {
 		setTool("", false);
 		fillElement.className = "";
 	} else {
-		$('.active').attr('class', '');
+		var activeElements = document.getElementsByClassName('active');
+		for (var i in activeElements) {
+			activeElements[i].className = '';
+		}
+		//$('.active').attr('class', '');
 		fillElement.className = "active";
 		setTool(FILL_TOOL, true);
 		setStrokeToRound();
 	}
 };
 
-var setBrushTool = function(){
+var setBrushTool = function() {
 	var brushElement = document.getElementById("brush_btn");
-	if(isBrushTool()){
+	if (isBrushTool()) {
 		setTool("", false);
 		brushElement.className = "";
-	} else{
-		$('.active').attr('class', '');
+	} else {
+		var activeElements = document.getElementsByClassName('active');
+		for (var i in activeElements) {
+			activeElements[i].className = '';
+		}
+		//$('.active').attr('class', '');
 		brushElement.className = "active";
 		setTool(BRUSH_TOOL, false);
 		setStrokeToRound();
@@ -236,7 +282,11 @@ var setEllipseTool = function() {
 		setTool("", false);
 		ellipseElement.className = "";
 	} else {
-		$('.active').attr('class', '');
+		var activeElements = document.getElementsByClassName('active');
+		for (var i in activeElements) {
+			activeElements[i].className = '';
+		}
+		//$('.active').attr('class', '');
 		ellipseElement.className = "active";
 		setTool(ELLIPSE_TOOL, true);
 		overlayCanvas.style.cursor = 'crosshair';
@@ -255,6 +305,7 @@ var initControlPanel = function() {
 	var ellipseButton = document.getElementById("ellipse_btn");
 	var fillButton = document.getElementById("fill_btn");
 	var brushButton = document.getElementById("brush_btn");
+	var eraseButton = document.getElementById("eraser_btn");
 
 	setStrokeToRound();
 
@@ -268,6 +319,7 @@ var initControlPanel = function() {
 	ellipseButton.onclick = setEllipseTool;
 	fillButton.onclick = setFillTool;
 	brushButton.onclick = setBrushTool;
+	eraseButton.onclick = setEraserTool;
 };
 
 var setStrokeToRound = function() {
@@ -278,17 +330,23 @@ var setStrokeToRound = function() {
 var init = function() {
 	initCanvases();
 	initControlPanel();
-	var popups = $('.closablePopup');
-	var popupCloseBtns = $('.popupClose');
-	for(var i=0; i < popups.length; i++){
-		popups[i].onmousedown=dragPopupDown;
+	var popups = document.getElementsByClassName('closablePopup');
+	//$('.closablePopup');
+	var popupCloseBtns = document.getElementsByClassName('popupClose');
+	//$('.popupClose');
+	for (var i = 0; i < popups.length; i++) {
+		popups[i].onmousedown = dragPopupDown;
 	}
-	for(var j=0; j < popupCloseBtns.length; j++){
-		popupCloseBtns[j].onclick=closePopup;
+	for (var j = 0; j < popupCloseBtns.length; j++) {
+		popupCloseBtns[j].onclick = closePopup;
 	}
-	
+
 };
 
-$(document).ready(function() {
-	init();
-}); 
+window.onload = init;
+
+/*
+ $(document).ready(function() {
+ init();
+ }); */
+
