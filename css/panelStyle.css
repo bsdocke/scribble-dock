@@ -1,70 +1,105 @@
-a:hover{
+a:hover {
 	background-color: #aa0000;
 }
 
 #colorSelector {
-position: relative;
-width: 36px;
-height: 36px;
-background: url(../images/select.png);
+	position: relative;
+	width: 36px;
+	height: 36px;
+	background: url(../images/select.png);
 }
 
-.delBtn{
+.delBtn {
 	color: #ff0000;
 }
 
-canvas{
-	display:block;
-	position:absolute;
+canvas {
+	display: block;
+	position: absolute;
+	border: 1px solid black;
 }
 
 .active {
-   padding:1px;
-   border:1px solid #021a40;
+	padding: 1px;
+	border: 1px solid #021a40;
 }
 
-.closablePopup { 
-    position:fixed;  
-    
-    background:#FFFFFF;  
-    
-    z-index:500000; 
-    margin-left: 15px;  
-    
-    /* additional features, can be omitted */
-    border:2px solid #ff0000;      
-    padding:15px;  
-    font-size:15px;  
-    -moz-box-shadow: 0 0 5px #ff0000;
-    -webkit-box-shadow: 0 0 5px #ff0000;
-    box-shadow: 0 0 5px #ff0000;
-    
+.closablePopup {
+	position: fixed;
+	background: #FFFFFF;
+	z-index: 500000;
+	margin-left: 15px;
+	/* additional features, can be omitted */
+	border: 2px solid #ff0000;
+	padding: 15px;
+	font-size: 15px;
+	-moz-box-shadow: 0 0 5px #ff0000;
+	-webkit-box-shadow: 0 0 5px #ff0000;
+	box-shadow: 0 0 5px #ff0000;
 }
 
-#toolsBox{
-	height:200px;  
-    width:50px; 
-    left: 800px;
-    top: 150px; 
+#toolsBox {
+	height: 200px;
+	width: 50px;
+	left: 800px;
+	top: 150px;
 }
 
-#layersList{
-	height:300px;  
-    width:300px;  
-    left: 300px;
-    top: 150px;
+#layersList {
+	height: 300px;
+	width: 300px;
+	left: 300px;
+	top: 150px;
 }
 
 .popupClose {
-    font-size:20px;  
-    line-height:15px;  
-    right:5px;  
-    top:5px;  
-    position:absolute;  
-    color:#6fa5e2;  
-    font-weight:500;      
+	font-size: 20px;
+	line-height: 15px;
+	right: 5px;
+	top: 5px;
+	position: absolute;
+	color: #6fa5e2;
+	font-weight: 500;
+}
+
+#ribbon_panel {
+	border-color: black;
+	border-width: 2px;
+	border-style: solid;
+}
+
+#ribbon_panel td:last-child{
+	border-right-color: black;
+	border-right-width: 1px;
+	border-right-style: solid;
+}
+
+.tab{
+	background-color: #CCCCCC;
+	display:inline;
+}
+
+.tab_active{
+	background-color: #666666;
+}
+
+.tab:hover{
+	background-color: #999999;
 }
 
 .ribbon_section{
-	display:block;
+	display:inline;
+	border-right: black;
+	border-right-style: solid;
+	border-right-width: 1px;
+}
+.label_btn{
+	display:inline-block;
+}
+.newCanvasFields {
+	display: block;
+}
+
+.newCanvasButtons {
+	display: block;
 }

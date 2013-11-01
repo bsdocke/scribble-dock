@@ -7,24 +7,21 @@
 		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/base/jquery-ui.css"/>
 				<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.js"></script>-->
-		
+		<script type="text/javascript" language="javascript" src="js/popup.js"></script>		
 		<script type="text/javascript" language="javascript" src="js/layers.js"></script>
 		<script type="text/javascript" language="javascript" src="js/fill.js"></script>
 		<script type="text/javascript" language="javascript" src="js/rectangletool.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/canvas.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/drawing.js"></script>
+		<script type="text/javascript" language="javascript" src ="js/main_ribbon.js"></script>
+		
 		
 		<title>Drawing Canvas</title>
-		<style type="text/css">
-			canvas {
-				border: 1px solid black;
-			}
-		</style>
 	</head>
 	<body>
 		<h1>Drawing Canvas</h1>
-		<iframe frameborder="0" id="main_ribbon" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
+		<iframe frameborder="0" id="main_ribbon" name="main_ribbon" onload="onToolbarInit(document.getElementById('main_ribbon').contentWindow);" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
 		<div id="controls">
 			
 				Import Image:

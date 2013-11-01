@@ -13,40 +13,47 @@
 
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="stylesheet" type="text/css" href="../css/panelStyle.css"/>
-<!--
-		<script type="text/javascript" language="javascript" src ="../js/canvas2image.js"></script>
-		<script type="text/javascript" language="javascript" src = "../js/base64.js"></script>-->
-
+		<script type="text/javascript" src="../js/popup.js"></script>
 		<script type="text/javascript" src="../js/main_ribbon.js"></script>
+		<script type="text/javascript" src="../js/drawing.js"></script>
+		<script type="text/javascript" src="../js/layers.js"></script>
+		<script type="text/javascript" src="../js/canvas.js"></script>
 	</head>
 
 	<body>
-		<table>
-			<tr>
-				<td>
-				<div class="ribbon_section">
-					<div id="save_btn" class="label_btn">
-						<div class="ribbon_btn_img"><img src="../assets/save.png"/>
-						</div>
-						<div class="ribbon_btn_label">
-							Save
-						</div>
+		<div id="ribbon_panel">
+			<div class="toolbar_tabs_container tabs_container">
+				<span class="toolbar_tab tab">File</span>
+				<span class="toolbar_tab tab">View</span>
+			</div>
+			<div class="ribbon_section">
+				<div id="new_btn" class="label_btn">
+					<div class="ribbon_btn_image"><img src="../assets/new.png"/>
 					</div>
-				</div></td>
-			
-			<td>
-				<div class="ribbon_section">
-					<div id="save_btn" class="label_btn">
-						<div class="ribbon_btn_img"><img src="../assets/open.png"/>
-						</div>
-						<div class="ribbon_btn_label">
-							Open
-						</div>
+					<div class="icon_label">
+						New
 					</div>
 				</div>
 
-			</tr>
-		</table>
+				<div id="save_btn" class="label_btn">
+					<div class="ribbon_btn_img"><img src="../assets/save.png"/>
+					</div>
+					<div class="ribbon_btn_label">
+						Save
+					</div>
+				</div>
 
+				<div id="open_btn" class="label_btn">
+					<div class="ribbon_btn_img"><img src="../assets/open.png"/>
+					</div>
+					<div class="ribbon_btn_label">
+						Open
+					</div>
+				</div>
+			</div>
+			<div class="ribbon_section">
+				
+			</div>
+		</div>
 	</body>
 </html>

@@ -327,19 +327,23 @@ var setStrokeToRound = function() {
 	ctx.lineJoin = "round";
 };
 
-var init = function() {
-	initCanvases();
-	initControlPanel();
+var initPopups = function(){
 	var popups = document.getElementsByClassName('closablePopup');
-	//$('.closablePopup');
 	var popupCloseBtns = document.getElementsByClassName('popupClose');
-	//$('.popupClose');
+	
 	for (var i = 0; i < popups.length; i++) {
 		popups[i].onmousedown = dragPopupDown;
 	}
+	
 	for (var j = 0; j < popupCloseBtns.length; j++) {
 		popupCloseBtns[j].onclick = closePopup;
 	}
+}
+
+var init = function() {
+	//initCanvases();
+	//initControlPanel();
+	initPopups();	
 
 };
 
