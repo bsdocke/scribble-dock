@@ -41,5 +41,5 @@ var closePopup = function(e) {
 	while (parentLevel.className != "closablePopup") {
 		parentLevel = parentLevel.parentElement;
 	}
-	parentLevel.style.display = 'none';
+	parentLevel.parentElement.removeChild(parentLevel);
 }; 

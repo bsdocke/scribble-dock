@@ -202,7 +202,15 @@ var onStrokeColorChangeHandler = function(e) {
 
 var onFillColorChangeHandler = function(e) {
 	ctx.fillStyle = e.target.value;
-}
+};
+
+var deactivateTools = function(){
+	var activeElements = document.getElementsByClassName('active');
+	for (var i in activeElements){
+		activeElements[i]. className = '';
+	}
+};
+
 var setTool = function(newCurrTool, bound) {
 	currentTool.name = newCurrTool;
 	currentTool.hasBoundingBox = bound;
@@ -214,7 +222,7 @@ var setRectangleTool = function() {
 		setTool("", false);
 		rectangleElement.className = "";
 	} else {
-		deactivateTools():
+		deactivateTools();
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
 		setStrokeToRound();
@@ -227,7 +235,7 @@ setEraserTool = function() {
 		setTool("", false);
 		eraserElement.className = "";
 	} else {
-		deactivateTools():
+		deactivateTools();
 		eraserElement.className = "active";
 		setTool(ERASER_TOOL, true);
 		setStrokeToRound();
@@ -240,7 +248,7 @@ var setFillTool = function() {
 		setTool("", false);
 		fillElement.className = "";
 	} else {
-		deactivateTools():
+		deactivateTools();
 		fillElement.className = "active";
 		setTool(FILL_TOOL, true);
 		setStrokeToRound();
@@ -274,12 +282,6 @@ var setEllipseTool = function() {
 	}
 };
 
-var deactiveTools = function(){
-	var activeElements = document.getElementsByClassName('active');
-	for (var i in activeElements){
-		activeElements[i]. className = '';
-	}
-};
 
 var setSelectionTool = function(){
 	var selectElement = getId("select_btn");
@@ -287,10 +289,7 @@ var setSelectionTool = function(){
 		setTool("", false);
 		selectElement.className = "";
 	} else{
-		var activeElements = document.getElementsByClassName('active');
-		for(var i in activeElements){
-			activeElements[i].className = '';
-		}
+		deactiveTools();
 		selectElement.className = "active";
 		setTool(SELECT_TOOL, true);
 		setStrokeToRound();

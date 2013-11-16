@@ -39,52 +39,52 @@ var onSaveClickHandler = function(e) {
 	}
 };
 
-var onNewClickHandler = function(e){
+var onNewClickHandler = function(e) {
 	var outerDoc = frameWin.parent.document;
 	var body = outerDoc.getElementsByTagName("body")[0];
 	var newDialog = outerDoc.createElement("div");
 	newDialog.className = "closablePopup";
-	
+
 	var closeBtn = outerDoc.createElement("a");
 	closeBtn.innerHTML = "X";
 	closeBtn.className = "popupClose";
 	closeBtn.id = "newDocClose";
 	closeBtn.onclick = closePopup;
-	
+
 	var header = outerDoc.createElement("h1");
 	header.innerHTML = "New Document";
-	
+
 	var widthInput = outerDoc.createElement("input");
-	widthInput.id="widthInput";
+	widthInput.id = "widthInput";
 	widthInput.type = 'text';
 	widthInput.label = "Canvas width: ";
-	
+
 	var heightInput = outerDoc.createElement("input");
 	heightInput.id = "heightInput";
 	heightInput.type = 'text';
 	heightInput.label = "Canvas height: ";
-	
+
 	var fieldsSpan = outerDoc.createElement("span");
 	fieldsSpan.className = "newCanvasFields";
 	fieldsSpan.innerHTML = "Width:   ";
-	
+
 	var fieldsSpan2 = outerDoc.createElement("span");
 	fieldsSpan2.className = "newCanvasFields";
 	fieldsSpan2.innerHTML = "Height: ";
-	
+
 	var buttonsSpan = outerDoc.createElement("span");
 	buttonsSpan.className = "newCanvasButtons";
-	
+
 	var ok = outerDoc.createElement("input");
-	ok.type="button";
-	ok.value="OK";
+	ok.type = "button";
+	ok.value = "OK";
 	ok.onclick = onOkClickHandler;
-	
+
 	var cancel = outerDoc.createElement("input");
-	cancel.type="button";
-	cancel.value="Cancel";
+	cancel.type = "button";
+	cancel.value = "Cancel";
 	cancel.onclick = closePopup;
-	
+
 	newDialog.appendChild(closeBtn);
 	newDialog.appendChild(header);
 	fieldsSpan.appendChild(widthInput);
@@ -96,39 +96,96 @@ var onNewClickHandler = function(e){
 	newDialog.appendChild(buttonsSpan);
 
 	body.appendChild(newDialog);
-	
+
 };
 
-var onTabClick = function(e){
+var onTabClick = function(e) {
 	var oldClasses = e.target.className;
 	var tokens = oldClasses.split(" ");
 	e.target.className = "";
-	for(var i=0; i < tokens.length - 1; i++){
-		e.target.className+=tokens[i] + " ";
+	for (var i = 0; i < tokens.length - 1; i++) {
+		e.target.className += tokens[i] + " ";
 	}
 	e.target.className += ".tab_active";
 }
-
 var onToolbarInit = function(e) {
 	frameWin = e;
 	var saveBtn = e.document.getElementById("save_btn");
 	saveBtn.onclick = onSaveClickHandler;
-	
+
 	var newBtn = e.document.getElementById("new_btn");
 	newBtn.onclick = onNewClickHandler;
-	
+
 	var tabs = document.getElementsByClassName("tab");
-	for(var t in tabs){
+	for (var t in tabs) {
 		tabs[t].onclick = onTabClick;
 	}
 };
 
+var onOkOverwriteClickHandler = function(e) {
+	var delBtns = document.getElementsByClassName("delBtn");
+	for (var i = 0; i < delBtns.length; i++) {
+		var e = {};
+		e.target = delBtns[i];
+		onDeleteClickHandler(e);
+	}
 
-var onOkClickHandler= function(e){
+	closePopup({
+		target : getId("overwriteClose")
+	});
+	getId("workPanel").removeChild(document.getElementsByTagName("canvas")[0]);
+	layerNum = 0;
+	onOkClickHandler({});
+};
+
+var onOkClickHandler = function(e) {
 	window.canvasWidth = getId("widthInput").value;
 	window.canvasHeight = getId("heightInput").value;
+	if (document.getElementsByTagName("canvas").length > 0) {
+
+		var body = document.getElementsByTagName("body")[0];
+		var newDialog = document.createElement("div");
+		newDialog.className = "closablePopup";
+
+		var header = document.createElement("h1");
+		header.innerHTML = "Erase existing document?";
+
+		var buttonsSpan = document.createElement("span");
+		buttonsSpan.className = "newCanvasButtons";
+
+		var ok = document.createElement("input");
+		ok.type = "button";
+		ok.value = "OK";
+		ok.onclick = onOkOverwriteClickHandler;
+
+		var cancel = document.createElement("input");
+		cancel.type = "button";
+		cancel.value = "Cancel";
+		cancel.onclick = closePopup;
+
+		var closeBtn = document.createElement("a");
+		closeBtn.innerHTML = "X";
+		closeBtn.className = "popupClose";
+		closeBtn.id = "overwriteClose";
+		closeBtn.onclick = closePopup;
+
+		newDialog.appendChild(closeBtn);
+		newDialog.appendChild(header);
+
+		buttonsSpan.appendChild(ok);
+		buttonsSpan.appendChild(cancel);
+		newDialog.appendChild(buttonsSpan);
+		body.appendChild(newDialog);
+	} else {
+		initNewDocument();
+	}
+};
+
+var initNewDocument = function() {
 	initCanvases();
 	initControlPanel();
-	closePopup({target: getId("newDocClose")});
+	closePopup({
+		target : getId("newDocClose")
+	});
 };
 
