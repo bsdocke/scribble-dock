@@ -99,7 +99,7 @@ var findOffset = function(element) {
 };
 
 var onMouseDownHandler = function(e) {
-	var panel = document.getElementById("workPanel");
+	var panel = getId("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
 	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool())) {
 		var point = findOffset(e.target);
@@ -109,7 +109,7 @@ var onMouseDownHandler = function(e) {
 };
 
 var removeMoveListenerFromWorkPanel = function() {
-	var panel = document.getElementById("workPanel");
+	var panel = getId("workPanel");
 	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
 };
 
@@ -187,7 +187,7 @@ var drawEllipse = function(ctx, x, y, w, h) {
 };
 
 var addEventsToCanvas = function() {
-	var panel = document.getElementById("workPanel");
+	var panel = getId("workPanel");
 	panel.addEventListener("mousedown", onMouseDownHandler, true);
 	panel.addEventListener("mouseup", onMouseUpHandler, true);
 };
@@ -209,16 +209,12 @@ var setTool = function(newCurrTool, bound) {
 };
 
 var setRectangleTool = function() {
-	var rectangleElement = document.getElementById("rectangle_btn");
+	var rectangleElement = getId("rectangle_btn");
 	if (currentTool.name == RECTANGLE_TOOL) {
 		setTool("", false);
 		rectangleElement.className = "";
 	} else {
-		var activeElements = document.getElementsByClassName('active');
-		for (var i in activeElements) {
-			activeElements[i].className = '';
-		}
-		//$('.active').attr('class', '');
+		deactivateTools():
 		rectangleElement.className = "active";
 		setTool(RECTANGLE_TOOL, true);
 		setStrokeToRound();
@@ -226,16 +222,12 @@ var setRectangleTool = function() {
 };
 
 setEraserTool = function() {
-	var eraserElement = document.getElementById("eraser_btn");
+	var eraserElement = getId("eraser_btn");
 	if (currentTool.name == ERASER_TOOL) {
 		setTool("", false);
 		eraserElement.className = "";
 	} else {
-		var activeElements = document.getElementsByClassName('active');
-		for (var i in activeElements) {
-			activeElements[i].className = '';
-		}
-		//$('.active').attr('class', '');
+		deactivateTools():
 		eraserElement.className = "active";
 		setTool(ERASER_TOOL, true);
 		setStrokeToRound();
@@ -243,16 +235,12 @@ setEraserTool = function() {
 };
 
 var setFillTool = function() {
-	var fillElement = document.getElementById("fill_btn");
+	var fillElement = getId("fill_btn");
 	if (currentTool.name == FILL_TOOL) {
 		setTool("", false);
 		fillElement.className = "";
 	} else {
-		var activeElements = document.getElementsByClassName('active');
-		for (var i in activeElements) {
-			activeElements[i].className = '';
-		}
-		//$('.active').attr('class', '');
+		deactivateTools():
 		fillElement.className = "active";
 		setTool(FILL_TOOL, true);
 		setStrokeToRound();
@@ -260,16 +248,12 @@ var setFillTool = function() {
 };
 
 var setBrushTool = function() {
-	var brushElement = document.getElementById("brush_btn");
+	var brushElement = getId("brush_btn");
 	if (isBrushTool()) {
 		setTool("", false);
 		brushElement.className = "";
 	} else {
-		var activeElements = document.getElementsByClassName('active');
-		for (var i in activeElements) {
-			activeElements[i].className = '';
-		}
-		//$('.active').attr('class', '');
+		deactivateTools();
 		brushElement.className = "active";
 		setTool(BRUSH_TOOL, false);
 		setStrokeToRound();
@@ -277,16 +261,12 @@ var setBrushTool = function() {
 };
 
 var setEllipseTool = function() {
-	var ellipseElement = document.getElementById("ellipse_btn");
+	var ellipseElement = getId("ellipse_btn");
 	if (isEllipseTool()) {
 		setTool("", false);
 		ellipseElement.className = "";
 	} else {
-		var activeElements = document.getElementsByClassName('active');
-		for (var i in activeElements) {
-			activeElements[i].className = '';
-		}
-		//$('.active').attr('class', '');
+		deactivateTools();
 		ellipseElement.className = "active";
 		setTool(ELLIPSE_TOOL, true);
 		overlayCanvas.style.cursor = 'crosshair';
@@ -294,18 +274,41 @@ var setEllipseTool = function() {
 	}
 };
 
+var deactiveTools = function(){
+	var activeElements = document.getElementsByClassName('active');
+	for (var i in activeElements){
+		activeElements[i]. className = '';
+	}
+};
+
+var setSelectionTool = function(){
+	var selectElement = getId("select_btn");
+	if(isSelectionTool()){
+		setTool("", false);
+		selectElement.className = "";
+	} else{
+		var activeElements = document.getElementsByClassName('active');
+		for(var i in activeElements){
+			activeElements[i].className = '';
+		}
+		selectElement.className = "active";
+		setTool(SELECT_TOOL, true);
+		setStrokeToRound();
+	}
+}
+
 var initControlPanel = function() {
-	var stroke = document.getElementById("strokeSize");
-	var strokeColor = document.getElementById("strokeColor");
-	var fillColor = document.getElementById("fillColor");
-	var fileUpload = document.getElementById("fileUpload");
-	var addLayerButton = document.getElementById("addLayer");
-	var clearButton = document.getElementById("clearCanvas");
-	var rectButton = document.getElementById("rectangle_btn");
-	var ellipseButton = document.getElementById("ellipse_btn");
-	var fillButton = document.getElementById("fill_btn");
-	var brushButton = document.getElementById("brush_btn");
-	var eraseButton = document.getElementById("eraser_btn");
+	var stroke = getId("strokeSize");
+	var strokeColor = getId("strokeColor");
+	var fillColor = getId("fillColor");
+	var fileUpload = getId("fileUpload");
+	var addLayerButton = getId("addLayer");
+	var clearButton = getId("clearCanvas");
+	var rectButton = getId("rectangle_btn");
+	var ellipseButton = getId("ellipse_btn");
+	var fillButton = getId("fill_btn");
+	var brushButton = getId("brush_btn");
+	var eraseButton = getId("eraser_btn");
 
 	setStrokeToRound();
 

@@ -28,13 +28,13 @@ var onLockClickHandler = function(e) {
 	}
 }
 var onDeleteClickHandler = function(e) {
-	updateCurrentCanvasVariables(document.getElementById("layer" + e.target.getAttribute("associatedLayer")).canvas);
+	updateCurrentCanvasVariables(getId("layer" + e.target.getAttribute("associatedLayer")).canvas);
 	currentCanvas.parentNode.removeChild(currentCanvas);
 	e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode);
 };
 
 var addToLayerList = function(newCanvasRow) {
-	var table = document.getElementById("layersTable");
+	var table = getId("layersTable");
 	var newRow = document.createElement("tr");
 	var anchor = document.createElement("a");
 

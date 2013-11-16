@@ -8,7 +8,7 @@ var function = addHeaderButtonListeners(){
 };
 
 var function = addFileButtonListener(){
-	var fileBtn = document.getElementById("file_btn");
+	var fileBtn = getId("file_btn");
 	filebBtn.addEventListener("onclick", onFileBtnClickListener, true);
 };
 

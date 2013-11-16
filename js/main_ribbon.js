@@ -125,10 +125,10 @@ var onToolbarInit = function(e) {
 
 
 var onOkClickHandler= function(e){
-	window.canvasWidth = document.getElementById("widthInput").value;
-	window.canvasHeight = document.getElementById("heightInput").value;
+	window.canvasWidth = getId("widthInput").value;
+	window.canvasHeight = getId("heightInput").value;
 	initCanvases();
 	initControlPanel();
-	closePopup({target: document.getElementById("newDocClose")});
+	closePopup({target: getId("newDocClose")});
 };
 

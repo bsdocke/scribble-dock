@@ -19,7 +19,7 @@ var getContext = function(canvas) {
 };
 
 var getCanvases = function() {
-	return document.getElementById("workPanel").childNodes;//$("#workPanel").childNodes;
+	return getId("workPanel").childNodes;//$("#workPanel").childNodes;
 };
 
 var initCanvases = function() {
@@ -39,7 +39,7 @@ var initOverlay = function() {
 };
 
 var getWorkPanel = function() {
-	return document.getElementById("workPanel")?document.getElementById("workPanel"):window.parent.document.getElementById("workPanel");
+	return getId("workPanel")?getId("workPanel"):window.parent.document.getElementById("workPanel");
 };
 
 var appendCanvas = function(canvasElement) {
