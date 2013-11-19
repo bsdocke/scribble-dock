@@ -3,15 +3,13 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="css/panelStyle.css"/>
-		<!--
-		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/base/jquery-ui.css"/>
-				<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-				<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.js"></script>-->
+
 		<script ype="text/javascript" language="javascript" src="js/util.js"></script>
 		<script type="text/javascript" language="javascript" src="js/popup.js"></script>		
 		<script type="text/javascript" language="javascript" src="js/layers.js"></script>
 		<script type="text/javascript" language="javascript" src="js/fill.js"></script>
 		<script type="text/javascript" language="javascript" src="js/rectangletool.js"></script>
+		<script type="text/javascript" language="javascript" src="js/ellipsetool.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/canvas.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/drawing.js"></script>
@@ -21,8 +19,8 @@
 		<title>Drawing Canvas</title>
 	</head>
 	<body>
-		<h1>Drawing Canvas</h1>
-		<iframe frameborder="0" id="main_ribbon" name="main_ribbon" onload="onToolbarInit(document.getElementById('main_ribbon').contentWindow);" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
+		<h1>Freeasle</h1>
+		<iframe frameborder="0" id="main_ribbon" name="main_ribbon" onload="onToolbarInit(getId('main_ribbon').contentWindow);" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
 		<div id="controls">
 			
 				Import Image:
@@ -48,6 +46,11 @@
 				</tr>
 				<tr>
 					<td><img id="eraser_btn" src="assets/shitty_eraser.png"/></td>
+					<td><img id="selection_btn" src="assets/selection.png"/></td>
+				</tr>
+				<tr>
+					<td><img id="text_btn" src="assets/text.png"/></td>
+					<td><img id="line_btn" src="assets/line.png"/></td>
 				</tr>
 			</table>
 

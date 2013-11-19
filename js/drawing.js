@@ -9,6 +9,7 @@ var LINE_TOOL = "Line";
 var BRUSH_TOOL = "Brush";
 var FILL_TOOL = "Fill";
 var ERASER_TOOL = "Eraser";
+var TEXT_TOOL = "Text";
 
 var currentTool = {
 	name : "",
@@ -19,6 +20,9 @@ var isRectangleTool = function() {
 	return currentTool.name == RECTANGLE_TOOL;
 };
 
+var isLineTool = function() {
+	return currentTool.name == LINE_TOOL;
+}
 var isBrushTool = function() {
 	return currentTool.name == BRUSH_TOOL;
 };
@@ -35,6 +39,14 @@ var isEraserTool = function() {
 	return currentTool.name == ERASER_TOOL;
 };
 
+var isSelectionTool = function() {
+	return currentTool.name == SELECTOR_TOOL;
+};
+
+var isTextTool = function() {
+	return currentTool.name == TEXT_TOOL;
+};
+
 var onMouseMoveHandler = function(e) {
 	var x, y;
 	var point = findOffset(e.target);
@@ -42,7 +54,7 @@ var onMouseMoveHandler = function(e) {
 	y = e.pageY - point.y;
 	if (!currentCanvas.locked) {
 
-		if (isRectangleTool()) {
+		if (isRectangleTool() || isSelectionTool()) {
 			overlayCtx.beginPath();
 			overlayCtx.closePath();
 			var w = overlayCanvas.width;
@@ -50,7 +62,6 @@ var onMouseMoveHandler = function(e) {
 			overlayCanvas.width = 1;
 			overlayCanvas.width = w;
 			overlayCtx.clearRect(0, 0, w, h);
-			//overlayCtx.stroke();
 			drawRectangleOnContext(overlayCtx, e);
 		} else if (isEllipseTool()) {
 			overlayCtx.beginPath();
@@ -59,6 +70,22 @@ var onMouseMoveHandler = function(e) {
 			var h = overlayCanvas.height;
 			overlayCtx.clearRect(0, 0, w, h);
 			drawEllipseOnContext(overlayCtx, e);
+		} else if (isLineTool()) {
+			overlayCtx.beginPath();
+			overlayCtx.closePath();
+			var w = overlayCanvas.width;
+			var h = overlayCanvas.height;
+			overlayCanvas.width = 1;
+			overlayCanvas.width = w;
+			overlayCtx.clearRect(0, 0, w, h);
+
+			overlayCtx.strokeStyle = ctx.strokeStyle;
+			overlayCtx.lineWidth = ctx.lineWidth;
+			overlayCtx.beginPath();
+			overlayCtx.moveTo(boundingBoxX, boundingBoxY);
+			overlayCtx.lineTo(x, y);
+			overlayCtx.stroke();
+
 		} else if (isBrushTool()) {
 			if (lineStarted) {
 				ctx.lineTo(x, y);
@@ -66,7 +93,6 @@ var onMouseMoveHandler = function(e) {
 			} else {
 				ctx.beginPath();
 				ctx.moveTo(x, y);
-				//ctx.closePath();
 				lineStarted = true;
 			}
 		} else if (isEraserTool()) {
@@ -101,10 +127,13 @@ var findOffset = function(element) {
 var onMouseDownHandler = function(e) {
 	var panel = getId("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
-	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool())) {
+	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool() || isSelectionTool() || isLineTool())) {
 		var point = findOffset(e.target);
 		boundingBoxX = e.pageX - point.x;
 		boundingBoxY = e.pageY - point.y;
+	} else if (!currentCanvas.locked && isLineTool()) {
+		overlayCtx.strokeStyle = ctx.strokeStyle;
+		overlayCtx.lineWidth = ctx.lineWidth;
 	}
 };
 
@@ -113,77 +142,91 @@ var removeMoveListenerFromWorkPanel = function() {
 	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
 };
 
-var commitEllipseToCanvas = function(e) {
-	ctx.beginPath();
-	ctx.closePath();
-	var w = overlayCanvas.width;
-	var h = overlayCanvas.height;
-	overlayCanvas.width = 1;
-	overlayCanvas.width = w;
-	overlayCtx.clearRect(0, 0, w, h);
-	drawEllipseOnContext(ctx, e);
-	ctx.fill();
-}
 var onMouseUpHandler = function(e) {
-	
 	removeMoveListenerFromWorkPanel();
 	lineStarted = false;
 	if (!currentCanvas.locked) {
 		if (isRectangleTool()) {
 			commitRectangleToCanvas(e);
+		} else if (isSelectionTool()) {
+			var x, y;
+			var point = findOffset(event.target);
+			x = e.pageX - point.x;
+			y = e.pageY - point.y;
+
+			if (x < boundingBoxX) {
+				overlayCtx.selectedLeft = x;
+				overlayCtx.selectedRight = boundingBoxX;
+				if (y < boundingBoxY) {
+					overlayCtx.selectedTop = y;
+					overlayCtx.selectedBottom = boundingBoxY;
+				} else {
+					overlayCtx.selectedTop = boundingBoxY;
+					overlayCtx.selectedBottom = y;
+				}
+			} else {
+				overlayCtx.selectedLeft = boundingBoxX;
+				overlayCtx.selectedRight = x;
+				if (y < boundingBoxY) {
+					overlayCtx.selectedTop = y;
+					overlayCtx.selectedBottom = boundingBoxY;
+				} else {
+					overlayCtx.selectedTop = boundingBoxY;
+					overlayCtx.selectedBottom = y;
+				}
+			}
+			overlayCtx.fillStyle = '';
+			drawRectangleOnContext(overlayCtx, e);
+			window.onkeyup = function(e) {
+				if (e.keyCode == 46) {
+					ctx.clearRect(overlayCtx.selectedLeft, overlayCtx.selectedTop, Math.abs(overlayCtx.selectedLeft - overlayCtx.selectedRight), Math.abs(overlayCtx.selectedTop - overlayCtx.selectedBottom));
+					currentCanvas.onkeydown = null;
+					overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+					overlayCtx.selectedTop = null;
+					overlayCtx.selectedBottom = null;
+					overlayCtx.selectedLeft = null;
+					overlayCtx.selectedRight = null;
+				}
+			};
+		} else if (isTextTool()) {
+			var x, y;
+			var point = findOffset(event.target);
+			x = e.pageX - point.x;
+			y = e.pageY - point.y;
+
+			var text = prompt("Please input your desired text");
+			if (text != null) {
+				ctx.textAlign = "left";
+				ctx.textBaseline = "top";
+				ctx.fillText(text, x, y);
+			}
 		} else if (isEllipseTool()) {
 			commitEllipseToCanvas(e);
 		} else if (isFillTool()) {
 			commitFillToCanvas(e);
-		} else if (isEraserTool()){
+		} else if (isEraserTool()) {
 			ctx.globalCompositeOperation = "destination-over";
+		} else if (isLineTool()) {
+			var x, y;
+			var point = findOffset(event.target);
+			x = e.pageX - point.x;
+			y = e.pageY - point.y;
+
+			ctx.closePath();
+			ctx.beginPath();
+			ctx.moveTo(boundingBoxX, boundingBoxY);
+			ctx.lineTo(x, y);
+			ctx.stroke();
+
+			overlayCtx.strokeStyle = "#000000";
+			overlayCtx.lineWidth = 1;
+			var w = overlayCanvas.width;
+			var h = overlayCanvas.height;
+			overlayCanvas.width = 1;
+			overlayCanvas.width = w;
+			overlayCtx.clearRect(0,0,w,h);
 		}
 	}
-};
-
-var drawEllipseOnContext = function(ctx, event) {
-	var x, y;
-	var point = findOffset(event.target);
-	x = event.pageX - point.x;
-	y = event.pageY - point.y;
-	var w = Math.abs(x - boundingBoxX);
-	var h = Math.abs(y - boundingBoxY);
-	if (x < boundingBoxX) {
-		if (y < boundingBoxY) {
-			drawEllipseByCenter(ctx, boundingBoxX - w / 2, boundingBoxY - h / 2, w, h);
-		} else {
-			drawEllipseByCenter(ctx, boundingBoxX - w / 2, boundingBoxY + h / 2, w, h);
-		}
-	} else {
-		if (y < boundingBoxY) {
-			drawEllipseByCenter(ctx, boundingBoxX + w / 2, boundingBoxY - h / 2, w, h);
-		} else {
-			drawEllipseByCenter(ctx, boundingBoxX + w / 2, boundingBoxY + h / 2, w, h);
-		}
-	}
-	ctx.stroke();
-}
-var drawEllipseByCenter = function(ctx, cx, cy, w, h) {
-	drawEllipse(ctx, cx - w / 2.0, cy - h / 2.0, w, h);
-};
-
-var drawEllipse = function(ctx, x, y, w, h) {
-	var kappa = .5522848, ox = (w / 2) * kappa, // control point offset horizontal
-	oy = (h / 2) * kappa, // control point offset vertical
-	xe = x + w, // x-end
-	ye = y + h, // y-end
-	xm = x + w / 2, // x-middle
-	ym = y + h / 2;
-	// y-middle
-
-	ctx.beginPath();
-	ctx.moveTo(x, ym);
-	ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-	ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-	ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-	ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-	ctx.closePath();
-	ctx.stroke();
 };
 
 var addEventsToCanvas = function() {
@@ -193,6 +236,7 @@ var addEventsToCanvas = function() {
 };
 
 var onStrokeChangeHandler = function(e) {
+
 	ctx.lineWidth = parseInt(e.target.value, 10);
 };
 
@@ -204,16 +248,29 @@ var onFillColorChangeHandler = function(e) {
 	ctx.fillStyle = e.target.value;
 };
 
-var deactivateTools = function(){
+var deactivateTools = function() {
 	var activeElements = document.getElementsByClassName('active');
-	for (var i in activeElements){
-		activeElements[i]. className = '';
+	for (var i in activeElements) {
+		activeElements[i].className = '';
 	}
 };
 
 var setTool = function(newCurrTool, bound) {
 	currentTool.name = newCurrTool;
 	currentTool.hasBoundingBox = bound;
+};
+
+var setTextTool = function() {
+	var textElement = getId("text_btn");
+	if (currentTool.name == TEXT_TOOL) {
+		setTool("", false);
+		textElement.className = "";
+	} else {
+		deactivateTools();
+		textElement.className = "active";
+		setTool(TEXT_TOOL, true);
+		setStrokeToRound();
+	}
 };
 
 var setRectangleTool = function() {
@@ -282,20 +339,32 @@ var setEllipseTool = function() {
 	}
 };
 
+var setLineTool = function() {
+	var lineElement = getId("line_btn");
+	if (isLineTool()) {
+		setTool("", false);
+		lineElement.className = "";
+	} else {
+		deactivateTools();
+		lineElement.className = "active";
+		setTool(LINE_TOOL, true);
+		overlayCanvas.style.cursor = 'crosshair';
+		setStrokeToRound();
+	}
+};
 
-var setSelectionTool = function(){
-	var selectElement = getId("select_btn");
-	if(isSelectionTool()){
+var setSelectionTool = function() {
+	var selectElement = getId("selection_btn");
+	if (isSelectionTool()) {
 		setTool("", false);
 		selectElement.className = "";
-	} else{
-		deactiveTools();
+	} else {
+		deactivateTools();
 		selectElement.className = "active";
-		setTool(SELECT_TOOL, true);
+		setTool(SELECTOR_TOOL, true);
 		setStrokeToRound();
 	}
 }
-
 var initControlPanel = function() {
 	var stroke = getId("strokeSize");
 	var strokeColor = getId("strokeColor");
@@ -308,6 +377,9 @@ var initControlPanel = function() {
 	var fillButton = getId("fill_btn");
 	var brushButton = getId("brush_btn");
 	var eraseButton = getId("eraser_btn");
+	var selectionButton = getId("selection_btn");
+	var textButton = getId("text_btn");
+	var lineButton = getId("line_btn");
 
 	setStrokeToRound();
 
@@ -322,6 +394,9 @@ var initControlPanel = function() {
 	fillButton.onclick = setFillTool;
 	brushButton.onclick = setBrushTool;
 	eraseButton.onclick = setEraserTool;
+	selectionButton.onclick = setSelectionTool;
+	textButton.onclick = setTextTool;
+	lineButton.onclick = setLineTool;
 };
 
 var setStrokeToRound = function() {
@@ -329,30 +404,27 @@ var setStrokeToRound = function() {
 	ctx.lineJoin = "round";
 };
 
-var initPopups = function(){
-	var popups = document.getElementsByClassName('closablePopup');
-	var popupCloseBtns = document.getElementsByClassName('popupClose');
-	
-	for (var i = 0; i < popups.length; i++) {
-		popups[i].onmousedown = dragPopupDown;
-	}
-	
+var initPopups = function() {
+	initPopupDragListeners();
+	initPopupCloseListeners();
+};
+
+var initPopupCloseListeners = function() {
+	var popupCloseBtns = getClass('popupClose');
 	for (var j = 0; j < popupCloseBtns.length; j++) {
 		popupCloseBtns[j].onclick = closePopup;
 	}
-}
+};
+
+var initPopupDragListeners = function() {
+	var popups = getClass('closablePopup');
+	for (var i = 0; i < popups.length; i++) {
+		popups[i].onmousedown = dragPopupDown;
+	}
+};
 
 var init = function() {
-	//initCanvases();
-	//initControlPanel();
-	initPopups();	
-
+	initPopups();
 };
 
 window.onload = init;
-
-/*
- $(document).ready(function() {
- init();
- }); */
-

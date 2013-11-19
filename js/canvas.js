@@ -19,7 +19,7 @@ var getContext = function(canvas) {
 };
 
 var getCanvases = function() {
-	return getId("workPanel").childNodes;//$("#workPanel").childNodes;
+	return getId("workPanel").childNodes;
 };
 
 var initCanvases = function() {
@@ -112,8 +112,6 @@ var setCanvasStyle = function(canvas, zIndex) {
 	return canvas;
 };
 
-
-
 var clearCanvas = function() {
 	var oldStrokeWidth = ctx.lineWidth;
 	var oldStrokeStyle = ctx.strokeStyle;
@@ -123,5 +121,4 @@ var clearCanvas = function() {
 	ctx.strokeStyle = oldStrokeStyle;
 	ctx.fillStyle = oldFillStyle;
 	setStrokeToRound();
-	//ctx.clearRect(0, 0, currentCanvas.width, currentCanvas.height);
 }; 

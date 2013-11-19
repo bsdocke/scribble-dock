@@ -2,6 +2,16 @@ a:hover {
 	background-color: #aa0000;
 }
 
+div,h1,iframe {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: -moz-none;
+}
+
+h1{
+	font-family: Arial, Helvetica, sans-serif;
+}
+
 #colorSelector {
 	position: relative;
 	width: 36px;

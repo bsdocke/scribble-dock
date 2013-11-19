@@ -37,6 +37,28 @@ var onSaveClickHandler = function(e) {
 			top.consoleRef.document.close()
 		};
 	}
+	return result.toDataURL('image/png');
+};
+
+var onExportToImgurClickHandler = function(e) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "https://api.imgur.com/3/image");
+	xhr.setRequestHeader('Authorization', 'Client-ID 75ecacee4c13695');
+	xhr.setRequestHeader('Accept', 'json');
+
+	var imageData = onSaveClickHandler({});
+	imageData = imageData.replace(/^data:image\/(png|jpg);base64,/, "");
+
+	var fd = new FormData();
+	fd.append("image", imageData);
+	xhr.send(fd);
+
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			console.log(xhr.responseText);
+		}
+	};
+
 };
 
 var onNewClickHandler = function(e) {
@@ -115,6 +137,9 @@ var onToolbarInit = function(e) {
 
 	var newBtn = e.document.getElementById("new_btn");
 	newBtn.onclick = onNewClickHandler;
+
+	var exportBtn = e.document.getElementById("export_btn");
+	exportBtn.onclick = onExportToImgurClickHandler;
 
 	var tabs = document.getElementsByClassName("tab");
 	for (var t in tabs) {

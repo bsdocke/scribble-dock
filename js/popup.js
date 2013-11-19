@@ -1,5 +1,6 @@
 var dragPopupUp = function(e) {
-	e.target.removeEventListener('mousemove', dragPopup);
+	document.removeEventListener('mousemove', dragPopup);
+	document.removeEventListener('mouseup', dragPopup);
 };
 
 var dragPopupDown = function(e) {
@@ -14,8 +15,8 @@ var dragPopupDown = function(e) {
 	}
 	popupOriginalX = e.target.offsetLeft;
 	popupOriginalY = e.target.offsetTop;
-	e.target.addEventListener('mousemove', dragPopup);
-	e.target.addEventListener('mouseup', dragPopupUp);
+	document.addEventListener('mousemove', dragPopup);
+	document.addEventListener('mouseup', dragPopupUp);
 };
 
 var dragPopup = function(e) {
