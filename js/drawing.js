@@ -1,6 +1,7 @@
 var layerNum = 0;
 var lineStarted = false;
 var activeLayer;
+var animationInterval = {};
 
 var SELECTOR_TOOL = "Selector";
 var RECTANGLE_TOOL = "Rectangle";
@@ -54,7 +55,7 @@ var onMouseMoveHandler = function(e) {
 	y = e.pageY - point.y;
 	if (!currentCanvas.locked) {
 
-		if (isRectangleTool() || isSelectionTool()) {
+		if (isRectangleTool()) {
 			overlayCtx.beginPath();
 			overlayCtx.closePath();
 			var w = overlayCanvas.width;
@@ -63,6 +64,18 @@ var onMouseMoveHandler = function(e) {
 			overlayCanvas.width = w;
 			overlayCtx.clearRect(0, 0, w, h);
 			drawRectangleOnContext(overlayCtx, e);
+		} else if (isSelectionTool()) {
+			overlayCtx.beginPath();
+			overlayCtx.closePath();
+			overlayCtx.oldStroke = overlayCtx.strokeStyle;
+			var w = overlayCanvas.width;
+			var h = overlayCanvas.height;
+			overlayCanvas.width = 1;
+			overlayCanvas.width = w;
+			overlayCtx.clearRect(0, 0, w, h);
+			overlayCtx.setLineDash([4, 1]);
+			drawRectangleOnContext(overlayCtx, e);
+			overlayCtx.strokeStyle = overlayCtx.oldStroke;
 		} else if (isEllipseTool()) {
 			overlayCtx.beginPath();
 			overlayCtx.closePath();
@@ -125,6 +138,7 @@ var findOffset = function(element) {
 };
 
 var onMouseDownHandler = function(e) {
+	window.clearInterval(animationInterval);
 	var panel = getId("workPanel");
 	panel.addEventListener("mousemove", onMouseMoveHandler, true);
 	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool() || isSelectionTool() || isLineTool())) {
@@ -177,6 +191,23 @@ var onMouseUpHandler = function(e) {
 			}
 			overlayCtx.fillStyle = '';
 			drawRectangleOnContext(overlayCtx, e);
+			animationInterval = window.setInterval(function() {
+				
+				overlayCtx.beginPath();
+				overlayCtx.closePath();
+				var w = overlayCanvas.width;
+				var h = overlayCanvas.height;
+				overlayCanvas.width = 1;
+				overlayCanvas.width = w;
+				overlayCtx.clearRect(0, 0, w, h);
+				overlayCtx.setLineDash([4,1]);
+				drawRectangleOnContext(overlayCtx, e);
+				if (overlayCtx.lineDashOffset == 2) {
+					overlayCtx.lineDashOffset = 0;
+				} else {
+					overlayCtx.lineDashOffset = 2;
+				}
+			}, 750);
 			window.onkeyup = function(e) {
 				if (e.keyCode == 46) {
 					ctx.clearRect(overlayCtx.selectedLeft, overlayCtx.selectedTop, Math.abs(overlayCtx.selectedLeft - overlayCtx.selectedRight), Math.abs(overlayCtx.selectedTop - overlayCtx.selectedBottom));
@@ -186,8 +217,13 @@ var onMouseUpHandler = function(e) {
 					overlayCtx.selectedBottom = null;
 					overlayCtx.selectedLeft = null;
 					overlayCtx.selectedRight = null;
+					window.clearInterval(animationInterval);
 				}
 			};
+			
+			overlayCtx.strokeStyle = overlayCtx.oldStroke;
+			overlayCtx.setLineDash([1,0]);
+			overlayCtx.lineDashOffset=0;
 		} else if (isTextTool()) {
 			var x, y;
 			var point = findOffset(event.target);
@@ -224,7 +260,7 @@ var onMouseUpHandler = function(e) {
 			var h = overlayCanvas.height;
 			overlayCanvas.width = 1;
 			overlayCanvas.width = w;
-			overlayCtx.clearRect(0,0,w,h);
+			overlayCtx.clearRect(0, 0, w, h);
 		}
 	}
 };

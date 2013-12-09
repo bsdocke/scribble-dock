@@ -2,7 +2,7 @@ a:hover {
 	background-color: #aa0000;
 }
 
-div,h1,iframe {
+div,h1,iframe,a {
 	user-select: none;
 	-webkit-user-select: none;
 	-moz-user-select: -moz-none;

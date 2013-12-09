@@ -33,6 +33,19 @@ var onDeleteClickHandler = function(e) {
 	e.target.parentNode.parentNode.parentNode.removeChild(e.target.parentNode.parentNode);
 };
 
+var onLayerDoubleClickHandler = function(e){
+	e.target.nameText = e.target.innerHTML;
+	
+	var nameBox = document.createElement("input");
+	nameBox.type = "text";
+	e.target.innerHTML = "";
+	e.target.appendChild(nameBox);
+	nameBox.onblur = function(e){
+		e.target.parentElement.innerHTML = e.target.value;
+	};
+	
+}
+
 var addToLayerList = function(newCanvasRow) {
 	var table = getId("layersTable");
 	var newRow = document.createElement("tr");
@@ -48,6 +61,7 @@ var addToLayerList = function(newCanvasRow) {
 	insertLayerDeleteButton(newRow, layerNum);
 	anchor.style.background = "#ff00ff";
 	anchor.addEventListener("click", onLayerClickHandler, true);
+	anchor.ondblclick=onLayerDoubleClickHandler;
 	anchor.canvas = currentCanvas;
 	activeLayer = anchor;
 };
