@@ -11,6 +11,7 @@ var BRUSH_TOOL = "Brush";
 var FILL_TOOL = "Fill";
 var ERASER_TOOL = "Eraser";
 var TEXT_TOOL = "Text";
+var EYEDROPPER_TOOL = "Eyedropper";
 
 var currentTool = {
 	name : "",
@@ -46,6 +47,10 @@ var isSelectionTool = function() {
 
 var isTextTool = function() {
 	return currentTool.name == TEXT_TOOL;
+};
+
+var isEyedropperTool = function(){
+	return currentTool.name == EYEDROPPER_TOOL;
 };
 
 var onMouseMoveHandler = function(e) {
@@ -139,8 +144,8 @@ var findOffset = function(element) {
 
 var onMouseDownHandler = function(e) {
 	window.clearInterval(animationInterval);
-	var panel = getId("workPanel");
-	panel.addEventListener("mousemove", onMouseMoveHandler, true);
+	var panel = $("#workPanel");
+	panel.on("vmousemove", onMouseMoveHandler);
 	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool() || isSelectionTool() || isLineTool())) {
 		var point = findOffset(e.target);
 		boundingBoxX = e.pageX - point.x;
@@ -152,8 +157,8 @@ var onMouseDownHandler = function(e) {
 };
 
 var removeMoveListenerFromWorkPanel = function() {
-	var panel = getId("workPanel");
-	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
+	var panel = $("#workPanel");
+	panel.removeEventListener("vmousemove", onMouseMoveHandler);
 };
 
 var onMouseUpHandler = function(e) {
@@ -400,6 +405,19 @@ var setSelectionTool = function() {
 		setTool(SELECTOR_TOOL, true);
 		setStrokeToRound();
 	}
+};
+
+var setEyedropperTool = function(){
+	var selectElement = getId("eyedropper_btn");
+	if(isEyedropperTool()){
+		setTool("",false);
+		selectElement.className = "";
+	}else{
+		deactivateTools();
+		selectElement.className = "active";
+		setTool(EYEDROPPER_TOOL, true);
+		setStrokeToRound();
+	}
 }
 var initControlPanel = function() {
 	var stroke = getId("strokeSize");
@@ -416,6 +434,7 @@ var initControlPanel = function() {
 	var selectionButton = getId("selection_btn");
 	var textButton = getId("text_btn");
 	var lineButton = getId("line_btn");
+	var eyedropperButton = getId("eyedropper_btn");
 
 	setStrokeToRound();
 
@@ -433,6 +452,7 @@ var initControlPanel = function() {
 	selectionButton.onclick = setSelectionTool;
 	textButton.onclick = setTextTool;
 	lineButton.onclick = setLineTool;
+	eyedropperButton.onclick = setEyedropperTool;
 };
 
 var setStrokeToRound = function() {

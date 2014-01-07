@@ -4,8 +4,11 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="css/panelStyle.css"/>
 
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.css">
+		<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
 		<script ype="text/javascript" language="javascript" src="js/util.js"></script>
-		<script type="text/javascript" language="javascript" src="js/popup.js"></script>		
+		<script type="text/javascript" language="javascript" src="js/popup.js"></script>
 		<script type="text/javascript" language="javascript" src="js/layers.js"></script>
 		<script type="text/javascript" language="javascript" src="js/fill.js"></script>
 		<script type="text/javascript" language="javascript" src="js/rectangletool.js"></script>
@@ -14,24 +17,23 @@
 		<script type="text/javascript" language="javascript" src ="js/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/drawing.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/main_ribbon.js"></script>
-		
-		
+
 		<title>Drawing Canvas</title>
 	</head>
 	<body>
 		<h1>Freeasle</h1>
 		<iframe frameborder="0" id="main_ribbon" name="main_ribbon" onload="onToolbarInit(getId('main_ribbon').contentWindow);" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
 		<div id="controls">
-			
-				Import Image:
-				<input type="file" id="fileUpload"/>
-				Stroke color:
-				<input type="text" size="7" id="strokeColor"/>
-				Fill color:
-				<input type="text" size="7" id="fillColor" />
-				Stroke Size:
-				<input type="text" size="2" id="strokeSize"/>
-			
+
+			Import Image:
+			<input type="file" id="fileUpload"/>
+			Stroke color:
+			<input type="text" size="7" id="strokeColor"/>
+			Fill color:
+			<input type="text" size="7" id="fillColor" />
+			Stroke Size:
+			<input type="text" size="2" id="strokeSize"/>
+
 		</div>
 		<div id="toolsBox" class="closablePopup">
 			<a class="popupClose">X</a>
@@ -51,6 +53,9 @@
 				<tr>
 					<td><img id="text_btn" src="assets/text.png"/></td>
 					<td><img id="line_btn" src="assets/line.png"/></td>
+				</tr>
+				<tr>
+					<td><img id="eyedropper_btn" src="assets/eyedropper.png"/></td>
 				</tr>
 			</table>
 

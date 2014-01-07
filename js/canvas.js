@@ -86,7 +86,8 @@ var copyCtxProperties = function(oldCtx, newCtx) {
 	newCtx.fillStyle = oldCtx.fillStyle;
 
 	return newCtx;
-}
+};
+
 var buildCanvas = function() {
 	var newCanvas = buildCanvasWithDimensions(canvasWidth, canvasHeight);
 	newCanvas = setCanvasId(newCanvas, "c_layer_" + layerNum);
