@@ -49,7 +49,7 @@ var isTextTool = function() {
 	return currentTool.name == TEXT_TOOL;
 };
 
-var isEyedropperTool = function(){
+var isEyedropperTool = function() {
 	return currentTool.name == EYEDROPPER_TOOL;
 };
 
@@ -197,7 +197,7 @@ var onMouseUpHandler = function(e) {
 			overlayCtx.fillStyle = '';
 			drawRectangleOnContext(overlayCtx, e);
 			animationInterval = window.setInterval(function() {
-				
+
 				overlayCtx.beginPath();
 				overlayCtx.closePath();
 				var w = overlayCanvas.width;
@@ -205,7 +205,7 @@ var onMouseUpHandler = function(e) {
 				overlayCanvas.width = 1;
 				overlayCanvas.width = w;
 				overlayCtx.clearRect(0, 0, w, h);
-				overlayCtx.setLineDash([4,1]);
+				overlayCtx.setLineDash([4, 1]);
 				drawRectangleOnContext(overlayCtx, e);
 				if (overlayCtx.lineDashOffset == 2) {
 					overlayCtx.lineDashOffset = 0;
@@ -225,10 +225,10 @@ var onMouseUpHandler = function(e) {
 					window.clearInterval(animationInterval);
 				}
 			};
-			
+
 			overlayCtx.strokeStyle = overlayCtx.oldStroke;
-			overlayCtx.setLineDash([1,0]);
-			overlayCtx.lineDashOffset=0;
+			overlayCtx.setLineDash([1, 0]);
+			overlayCtx.lineDashOffset = 0;
 		} else if (isTextTool()) {
 			var x, y;
 			var point = findOffset(event.target);
@@ -267,6 +267,19 @@ var onMouseUpHandler = function(e) {
 			overlayCanvas.width = w;
 			overlayCtx.clearRect(0, 0, w, h);
 		}
+	}
+	if (isEyedropperTool()) {
+		var x, y;
+		var point = findOffset(event.target);
+		x = e.pageX - point.x;
+		y = e.pageY - point.y;
+		
+		var sampleColor = ctx.getImageData(x, y, 1, 1).data;
+		var sampleHex = rgbToHex(sampleColor[0], sampleColor[1], sampleColor[2]);
+		ctx.fillStyle = sampleHex;
+		var fillInput = getId("fillColor");
+		fillInput.value = sampleHex;
+		fillInput.style.background = sampleHex;
 	}
 };
 
@@ -407,12 +420,12 @@ var setSelectionTool = function() {
 	}
 };
 
-var setEyedropperTool = function(){
+var setEyedropperTool = function() {
 	var selectElement = getId("eyedropper_btn");
-	if(isEyedropperTool()){
-		setTool("",false);
+	if (isEyedropperTool()) {
+		setTool("", false);
 		selectElement.className = "";
-	}else{
+	} else {
 		deactivateTools();
 		selectElement.className = "active";
 		setTool(EYEDROPPER_TOOL, true);
