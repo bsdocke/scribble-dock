@@ -158,7 +158,7 @@ var onMouseDownHandler = function(e) {
 
 var removeMoveListenerFromWorkPanel = function() {
 	var panel = $("#workPanel");
-	panel.removeEventListener("vmousemove", onMouseMoveHandler);
+	panel.unbind("vmousemove", onMouseMoveHandler);
 };
 
 var onMouseUpHandler = function(e) {
