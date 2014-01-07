@@ -144,8 +144,8 @@ var findOffset = function(element) {
 
 var onMouseDownHandler = function(e) {
 	window.clearInterval(animationInterval);
-	var panel = $("#workPanel");
-	panel.on("vmousemove", onMouseMoveHandler);
+	var panel = getId("workPanel");
+	panel.addEventListener("mousemove", onMouseMoveHandler, true);
 	if (!currentCanvas.locked && (isRectangleTool() || isEllipseTool() || isSelectionTool() || isLineTool())) {
 		var point = findOffset(e.target);
 		boundingBoxX = e.pageX - point.x;
@@ -157,8 +157,8 @@ var onMouseDownHandler = function(e) {
 };
 
 var removeMoveListenerFromWorkPanel = function() {
-	var panel = $("#workPanel");
-	panel.unbind("vmousemove", onMouseMoveHandler);
+	var panel = getId("workPanel");
+	panel.removeEventListener("mousemove", onMouseMoveHandler, true);
 };
 
 var onMouseUpHandler = function(e) {
