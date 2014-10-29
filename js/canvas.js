@@ -50,9 +50,9 @@ var addCanvas = function() {
 	var newCanvas = buildCanvas();
 	newCanvas.locked = false;
 	updateCurrentCanvasVariables(newCanvas);
-	incrementLayerNumber();
+	//incrementLayerNumber();
 	addEventsToCanvas();
-	addToLayerList(newCanvas);
+	//addToLayerList(newCanvas);
 	appendCanvas(newCanvas);
 	newCanvas.style.zIndex = layerNum;
 
@@ -109,7 +109,7 @@ var setCanvasId = function(canvas, id) {
 };
 
 var setCanvasStyle = function(canvas, zIndex) {
-	canvas.setAttribute("style", "display:block; positoin: absolute; z-index: " + zIndex + ";");
+	canvas.setAttribute("style", "display:block; position: absolute; z-index: " + zIndex + ";");
 	return canvas;
 };
 

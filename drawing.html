@@ -3,35 +3,60 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="css/panelStyle.css"/>
+		<script type="text/javascript" language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
+		<script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+
 		<script type="text/javascript" language="javascript" src="js/jscolor-1.4.2/jscolor/jscolor.js"></script>
 		<script type="text/javascript" language="javascript" src="js/util.js"></script>
-		<script type="text/javascript" language="javascript" src="js/popup.js"></script>		
+		<script type="text/javascript" language="javascript" src="js/popup.js"></script>
 		<script type="text/javascript" language="javascript" src="js/layers.js"></script>
 		<script type="text/javascript" language="javascript" src="js/fill.js"></script>
 		<script type="text/javascript" language="javascript" src="js/rectangletool.js"></script>
 		<script type="text/javascript" language="javascript" src="js/ellipsetool.js"></script>
-		<script type="text/javascript" language="javascript" src ="js/canvas.js"></script>
+		<!--<script type="text/javascript" language="javascript" src ="js/canvas.js"></script>-->
 		<script type="text/javascript" language="javascript" src ="js/imageupload.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/drawing.js"></script>
 		<script type="text/javascript" language="javascript" src ="js/main_ribbon.js"></script>
-		
-		
+
 		<title>Drawing Canvas</title>
 	</head>
 	<body>
+
+		<script type="text/template" id="layer-row-template">
+			<tr id="layer-row-<%= layer_number %>">
+			<td><a style="background:#FF00FF;"><%= layer_name %></a></td>
+			<td><a class="lockBtn"><img src="assets/lock.gif"</a></td>
+			<td><a class="delBtn" id="delete-<%= layer_number %>">X</a></td>
+			</tr>
+
+		</script>
+
+		<script type="text/template" id="popup-window-template">
+			<div class="closablePopup">
+			<a class="popupClose" id="<%= close_id %>">X</a>
+			<h1><%= popup_title %></h1>
+			</div>
+		</script>
+
+		<script type="text/template" id="new-document-popup-body">
+			<span class="newCanvasFields">Width: <input id="widthInput" type="text" /></span>
+			<span class="newCanvasFields">Height: <input id="heightInput" type="text" /></span>
+			<span class="newCanvasButtons"><input type="button" value="OK"/><input type="button" value="Cancel"/></span>
+		</script>
 		<h1>Freeasle</h1>
 		<iframe frameborder="0" id="main_ribbon" name="main_ribbon" onload="onToolbarInit(getId('main_ribbon').contentWindow);" src="html/main_ribbon.html" seamless="seamless" height="100"></iframe>
 		<div id="controls">
-			
-				Import Image:
-				<input type="file" id="fileUpload"/>
-				Stroke color:
-				<input class="color" type="text" size="7" id="strokeColor"/>
-				Fill color:
-				<input class="color" type="text" size="7" id="fillColor" />
-				Stroke Size:
-				<input type="text" size="2" id="strokeSize"/>
-			
+
+			Import Image:
+			<input type="file" id="fileUpload"/>
+			Stroke color:
+			<input class="color" type="text" size="7" id="strokeColor"/>
+			Fill color:
+			<input class="color" type="text" size="7" id="fillColor" />
+			Stroke Size:
+			<input type="text" size="2" id="strokeSize"/>
+
 		</div>
 		<div id="toolsBox" class="closablePopup">
 			<a class="popupClose">X</a>
@@ -66,5 +91,12 @@
 			<table id="layersTable" border="1"></table>
 		</div>
 		<div id="workPanel" style="position: relative;"></div>
+		<script type="text/javascript" language="javascript" src="js/CanvasModel.js"></script>
+		<script type="text/javascript" language="javascript" src="js/CanvasView.js"></script>
+		<script type="text/javascript" language="javascript" src="js/LayersModel.js"></script>
+		<script type="text/javascript" language="javascript" src="js/LayersView.js"></script>
+		<script type="text/javascript">
+			window.onload = init;
+		</script>
 	</body>
 </html>

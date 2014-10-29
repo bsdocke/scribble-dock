@@ -46,7 +46,7 @@ var onLayerDoubleClickHandler = function(e){
 	
 }
 
-var addToLayerList = function(newCanvasRow) {
+/*var addToLayerList = function(newCanvasRow) {
 	var table = getId("layersTable");
 	var newRow = document.createElement("tr");
 	var anchor = document.createElement("a");
@@ -88,4 +88,4 @@ var insertLayerDeleteButton = function(element, layerNumber) {
 	delWrapper.addEventListener("click", onDeleteClickHandler, true);
 	newCell.appendChild(delWrapper);
 	element.appendChild(newCell);
-};
+};*/

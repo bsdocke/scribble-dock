@@ -37,10 +37,11 @@ var dragPopup = function(e) {
 
 };
 
+/*
 var closePopup = function(e) {
 	var parentLevel = e.target.parentElement;
 	while (parentLevel.className != "closablePopup") {
 		parentLevel = parentLevel.parentElement;
 	}
 	parentLevel.parentElement.removeChild(parentLevel);
-}; 
+}; */

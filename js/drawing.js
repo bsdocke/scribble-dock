@@ -1,4 +1,4 @@
-var layerNum = 0;
+var layerNum = 1;
 var lineStarted = false;
 var activeLayer;
 var animationInterval = {};
@@ -494,6 +494,8 @@ var initPopupDragListeners = function() {
 
 var init = function() {
 	initPopups();
+	var layersView = new LayersView();
+	var canvasView = new CanvasView();
+	//var appView = new FreaselView();
 };
 
-window.onload = init;
